@@ -1,0 +1,31 @@
+//初始化设置
+
+var notificationid="20160620";
+var notificationinfo="不兼容所有1.0框架的插件，所有插件必须全部更新至2.0以上，否则无法使用！";
+var newestversion="2.1.3";
+try{
+if(window.debug&&ExView.version!=newestversion){
+	shownotice("各位dalao,新版本发布了，赶紧去更新吧！")
+	/*window.open('https://www.pgyer.com/exview','_system');
+	setTimeout(function(){
+		navigator.app.exitApp();
+	},300);*/
+}
+}catch(e){}
+var newestversioninfo="1.大更新，超多新功能<br>2.增加轻小说引擎<br>3.界面功能大修改<br>备注:安卓4.0-4.4，请去网盘下载高性能版或使用ExView+";
+var notificationtitle=((ExView.version!=newestversion)?"ExView版本更新通知":"ExView通知");
+var notificationcontent=((ExView.version!=newestversion)?"Gentle 发布 ExView "+newestversion+"<br>"+newestversioninfo:notificationinfo);
+var notificationfn=function(){
+	ExView.modules.pluginpage.init(1);
+};
+
+//弹幕显示
+LoadDMS('【最新版本】<a href="javascript:void(0);" onclick="window.open(\'https://www.pgyer.com/exview\',\'_system\');">'+newestversion+'</a>(<a href="javascript:void(0);" onclick="window.open(\'http://pan.baidu.com/s/1dFCvgsx\',\'_system\');">网盘下载</a>)<br><div style="background: black;"><img style="display:none;" src="img/loading.png" width="100%"  onclick="event.stopPropagation();$$(this).next().css(\'background-image\',\'url(img/loading.png)\');$$(this).css(\'display\',\'none\');$$(this).next().css(\'margin-top\',\'0\')"><svg class="xhr" xmlns="http://www.w3.org/2000/svg" style="width:100%;height: 20em;background-size: cover;background-position: top;background-image:url(img/loading.png); box-sizing:border-box" onclick="event.stopPropagation();$$(this).css(\'background-image\',\'none\');$$(this).prev().css(\'display\',\'block\');$$(this).css(\'margin-top\',\'-20em\')"><text y="40" x="299.263" fill="rgb(235,166,36)" style="font-size:1em;box-sizing:border-box">好牛啊，好厉害<animate attributeName="x" from="800" to="-400" begin="3s" dur="11s" repeatCount="indefinite" style="box-sizing:border-box;"></animate></text><text y="90" x="609.189" fill="rgb(223,34,28)" style="font-size:1.2em;box-sizing:border-box">哈哈哈哈<animate attributeName="x" from="800" to="-400" begin="1s" dur="10s" repeatCount="indefinite" style="box-sizing:border-box;"></animate></text><text y="120" x="340.991" fill="rgb(40,216,8)" style="font-size:1em;box-sizing:border-box">我要上电视，终于上电视了，o(≧v≦)o~~好棒<animate attributeName="x" from="800" to="-600" begin="2s" dur="14s" repeatCount="indefinite" style="box-sizing:border-box;"></animate></text><text y="160" x="-734.415" fill="rgb(33,25,23)" style="font-size:0.875em;box-sizing:border-box">没人有问题问我吗？<animate attributeName="x" from="800" to="-800" begin="3s" dur="10s" repeatCount="indefinite" style="box-sizing:border-box;"></animate></text><text y="210" x="618.275" fill="rgb(70,118,217)" style="font-size:1em;box-sizing:border-box">这个功能太棒了，不用就浪费了<animate attributeName="x" from="800" to="-800" begin="5s" dur="14s" repeatCount="indefinite" style="box-sizing:border-box;"></animate></text><text y="240" x="275.418" fill="rgb(255,92,139)" style="font-size:0.7em;box-sizing:border-box">哈哈哈哈哈哈<animate attributeName="x" from="800" to="-800" begin="2s" dur="14s" repeatCount="indefinite" style="box-sizing:border-box;"></animate></text><text y="280" x="132.35" fill="rgb(7,140,59)" style="font-size:1.2em;box-sizing:border-box">哈哈哈哈<animate attributeName="x" from="800" to="-800" begin="3s" dur="11s" repeatCount="indefinite" style="box-sizing:border-box;"></animate></text></svg></div>');
+//通知显示
+if((localStorage.ExView_NotificationId!=notificationid||ExView.version!=newestversion)&&localStorage.ExView_Licence){ExView.fw.alert(notificationcontent,notificationtitle,function(){
+if(ExView.version==newestversion){
+	localStorage.ExView_NotificationId=notificationid;notificationfn();
+}else{
+	window.open('https://www.pgyer.com/exview','_system');
+}
+});}
