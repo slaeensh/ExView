@@ -44,5 +44,6 @@
 {"name":"wnacg","title":"绅士漫画","version":"2.1.2","author":"Gentle","icon":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAABTElEQVQ4jcXTsUuVURgG8N93/YiQiGi4SaP/gBAR0uSQDlcUKaOM8g9obzEa00UXwaUIhBLhgtTm4tTgKK41O9xA5GZw0evtfg3n9XaRvsmhdzrnvOd5zvM+73uyoihcJiqXQiOvvPsJNzCBK2hgJ/LTeI9B5NjDExz0CPwu4CE+xFkTI7iHjSA9j/vYDpIGjrPK6tFHPL+grB0vlpXYifynbGDl8FccrKOFYTztu7yPr7iOGqp9uWau3c3xHUtBcBez8cJrLIZHLVzFFh70PMjOuie4gx8XZH4J8Bpe4gSPMYdvuJkITrslZdrAaICnMC4ZfStKmkkE7dJBynHOfk1qZSf2PXPz7KxUwQtMYhmbOMYjDGHsL0G7lKCGt3iFN5IHVXyWOhIyyxXAgtTS3QCN9YOTgk5Rx7w0PP+K23gW61aUQprQevbff+Mf0PRSnPpQ2roAAAAASUVORK5CYII=","disabled":"","text":"绅士生存守则！！！","url":"https://raw.githubusercontent.com/ghostgzt/ExView/master/plugins/wnacg.jsm"},
 {"name":"pic177","title":"177漫画","version":"2.1.1","author":"Gentle","icon":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAAD///+QOgCQ29sAADo6kNsAZrb/tmZmttu225AAOpDbtmYAAGbbkDq2ZgA6AAD//9sQJlD1AAAAQklEQVQY02OgE2BjFGBiYGVkZGQHE0ARFmYmkAQHE5iAC/Bw8oMJuAAbL4SACSAIKMXFzQAmQMrAZrPyAZlAghwAAJSTAVkVlfaqAAAAAElFTkSuQmCC","disabled":"","text":"成人漫画！成人漫画！成人漫画！","url":"https://raw.githubusercontent.com/ghostgzt/ExView/master/plugins/pic177.jsm"}
 ],
-"title":"服务器上的插件信息"
+"title":"服务器上的插件信息",
+"type":"试驾车"
 })

@@ -1,33 +1,10 @@
 (function(){
-//初始化设置
-
-var notificationid="20160620";
-var notificationinfo="不兼容所有1.0框架的插件，所有插件必须全部更新至2.0以上，否则无法使用！";
-var newestversion="2.1.4";
-var updatepath=iscrosswalk()?'http://www.coolapk.com/apk/com.gentle.exview.plus':'https://www.pgyer.com/exview';
-try{
-	if(window.debug&&ExView.version!=newestversion){
-		shownotice('各位dalao,新版本发布了，赶紧去<a href="'+updatepath+'" target="_system">更新</a>吧！')
-		/*window.open(updatepath,'_system');
-		setTimeout(function(){
-			navigator.app.exitApp();
-		},300);*/
-	}else{
-		var newestversioninfo="1.音量键翻页<br>2.控制体积<br>3.优化性能<br>备注:安卓4.0-4.4，请去网盘下载高性能版或使用ExView+";
-		var notificationtitle=((ExView.version!=newestversion)?"ExView版本更新通知":"ExView通知");
-		var notificationcontent=((ExView.version!=newestversion)?"Gentle 发布 ExView "+newestversion+"<br>"+newestversioninfo:notificationinfo);
-		var notificationfn=function(){
-			ExView.modules.pluginpage.init(1);
-		};		if((localStorage.ExView_NotificationId!=notificationid||ExView.version!=newestversion)&&localStorage.ExView_Licence){ExView.fw.alert(notificationcontent,notificationtitle,function(){
-		if(ExView.version==newestversion){
-			localStorage.ExView_NotificationId=notificationid;notificationfn();
-		}else{
-			window.open(updatepath,'_system');
-		}
-		});}		
-	}
-}catch(e){}
-
+	//初始化设置
+	var notificationid="20160620";
+	var notificationinfo="不兼容所有1.0框架的插件，所有插件必须全部更新至2.0以上，否则无法使用！";
+	var newestversion="2.1.4";
+	var newestversioninfo="1.音量键翻页<br>2.控制体积<br>3.优化性能<br>备注:安卓4.0-4.4，请去网盘下载高性能版或使用ExView+";
+	var updatepath=iscrosswalk()?'http://www.coolapk.com/apk/com.gentle.exview.plus':'https://www.pgyer.com/exview';
 	var getdms=function(flag){
 		var x=flag.x;
 		var y=flag.y;
@@ -39,7 +16,7 @@ try{
 		var begin=flag.begin;
 		var dur=flag.dur;
 		return '<text y="'+y+'" x="'+x+'" fill="'+color+'" style="font-size:'+size+';box-sizing:border-box">'+text+'<animate attributeName="x" from="'+from+'" to="'+to+'" begin="'+begin+'" dur="'+dur+'" repeatCount="indefinite" style="box-sizing:border-box;"></animate></text>';
-	}
+	};
 	var dmsjson=[
 		{y:40,x:299.263,color:"rgb(235,166,36)",size:"1em",text:"好牛啊，好厉害",from:800,to:-400,begin:"3s",dur:"11s"},
 		{y:90,x:609.189,color:"rgb(223,34,28)",size:"1.2em",text:"哈哈哈哈",from:800,to:-400,begin:"1s",dur:"10s"},
@@ -48,13 +25,36 @@ try{
 		{y:210,x:618.275,color:"rgb(70,118,217)",size:"1em",text:"这个功能太棒了，不用就浪费了",from:800,to:-800,begin:"5s",dur:"14s"},
 		{y:240,x:275.418,color:"rgb(255,92,139)",size:"0.7em",text:"哈哈哈哈哈哈",from:800,to:-800,begin:"2s",dur:"14s"},
 		{y:280,x:132.35,color:"rgb(7,140,59)",size:"1.2em",text:"哈哈哈哈",from:800,to:-800,begin:"3s",dur:"11s"}
-	];
+	];	
+	
+	//通知显示
+	try{
+		if(window.debug&&ExView.version!=newestversion){
+			shownotice('各位dalao,新版本发布了，赶紧去<a href="'+updatepath+'" target="_system">更新</a>吧！')
+			/*window.open(updatepath,'_system');
+			setTimeout(function(){
+				navigator.app.exitApp();
+			},300);*/
+		}else{
+			var notificationtitle=((ExView.version!=newestversion)?"ExView版本更新通知":"ExView通知");
+			var notificationcontent=((ExView.version!=newestversion)?"Gentle 发布 ExView "+newestversion+"<br>"+newestversioninfo:notificationinfo);
+			var notificationfn=function(){
+				ExView.modules.pluginpage.init(1);
+			};		if((localStorage.ExView_NotificationId!=notificationid||ExView.version!=newestversion)&&localStorage.ExView_Licence){ExView.fw.alert(notificationcontent,notificationtitle,function(){
+				if(ExView.version==newestversion){
+					localStorage.ExView_NotificationId=notificationid;notificationfn();
+				}else{
+					window.open(updatepath,'_system');
+				}
+			});}		
+		}
+	}catch(e){}
+
 	//弹幕显示
 	LoadDMS('【最新版本】<a href="javascript:void(0);" onclick="event.stopPropagation();window.open(\''+updatepath+'\',\'_system\');">'+newestversion+'</a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="event.stopPropagation();window.open(\'http://pan.baidu.com/s/1dFCvgsx\',\'_system\');">网盘下载</a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="event.stopPropagation();window.open(\''+(iscrosswalk()?updatepath:'http://www.coolapk.com/apk/com.gentle.exview')+'\',\'_system\');">酷安下载</a><div><a href="javascript:void(0);" onclick="event.stopPropagation();window.open(\''+(iscrosswalk()?updatepath:'http://www.coolapk.com/apk/com.gentle.exview')+'\',\'_system\');" class="button button-fill">用户反馈</a></div><div style="background: black;"><img style="display:none;" src="img/loading.png" width="100%"  onclick="event.stopPropagation();$$(this).next().css(\'background-image\',\'url(img/loading.png)\');$$(this).css(\'display\',\'none\');$$(this).next().css(\'margin-top\',\'0\')">'
 	+'<svg class="xhr" xmlns="http://www.w3.org/2000/svg" style="width:100%;height: 20em;background-size: cover;background-position: top;background-image:url(img/loading.png); box-sizing:border-box" onclick="event.stopPropagation();$$(this).css(\'background-image\',\'none\');$$(this).prev().css(\'display\',\'block\');$$(this).css(\'margin-top\',\'-20em\')">'
 	+(dmsjson.map(function(dms){return getdms(dms);}).join(""))
 	+'</svg>'
 	+'</div>');
-	//通知显示
 	
 })();
