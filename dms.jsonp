@@ -2,9 +2,9 @@
 	//初始化设置
 	var notificationid="20160620";
 	var notificationinfo="不兼容所有1.0框架的插件，所有插件必须全部更新至2.0以上，否则无法使用！";
-	var newestversion="2.1.5";
-	var newestversioninfo="1.修复Pixiv图片流<br>2.增加DOM选择器处理模块（处理HTML）<br>3.优化主页推荐轮展模块<br>备注:安卓4.0-4.4，请去网盘下载高性能版或使用ExView+";
-	var updatepath=iscrosswalk()?'http://www.coolapk.com/apk/com.gentle.exview.plus':'https://www.pgyer.com/exview';
+	var newestversion="2.1.6";
+	var newestversioninfo="1.优化小说模块<br>2.增加自动全屏状态开关<br>3.首页推荐bug修复<br>备注:安卓4.0-4.4，请去网盘下载高性能版或使用ExView+";
+	var updatepath=iscrosswalk()?'http://www.coolapk.com/apk/com.gentle.exview.plus':'http://www.coolapk.com/apk/com.gentle.exview';//https://www.pgyer.com/exview
 	var getdms=function(flag){
 		var x=flag.x;
 		var y=flag.y;
