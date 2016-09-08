@@ -2,94 +2,94 @@
 ##前言  
 ExView插件本地安装文件为epk格式，需用ExView自带文件管理器打开，按右上角安装按钮来进行安装;开发需要在全局设置那里打开调试模式  
 ##一.基本架构  
-ExView插件  
-|---info(配置) //使用pluginfo函数可调用此区域，如：pluginfo(args.plugin).name  
-|		|-name  
-|		|-version  
-|		|-icon  
-|		|-db  
-|		|-author  
-|		|-apihost  
-|		|-cdn  
-|		|-type //image|text  
-|		|-typeName //漫画|条漫|轻小说  
-|		|-description //插件简介  
-|		|-theme //主题色："blue","red","pink","purple","deeppurple","indigo","lightblue","cyan","teal","green","lightgreen","lime","yellow","amber","orange","deeporange","brown","gray","bluegray","black"  
-|		|-pagetitle:["<br>","收藏","首页","类型","下载"]  
-|		|-download:true //是否开启下载功能  
-|		|-setting:true //是否开启设置功能  
-|		|-lazyload:true //图片延迟加载  
-|		|-nativeres:true //本地请求，对于要改UA，Referer的要开  
-|		|-vphotomode:true //图片连续浏览模式  
-|		|-watermode:true //瀑布流模式  
-|		|-gallerymode:true //图库模式  
-|		|-typelistmode:true //类型列表界面  
-|		|-landscapemode //横屏模式  
-|		|-animation //开启动画效果  
-|		|-nightmode //暗夜模式  
-|		|-listallmode //连续列表模式  
-|		|-slidemode //拖动模式  
-|		|-autoturnpage //总是跳转首页  
-|		|-elegancemode //优雅界面  
-|		|-smallpicmode //小图界面  
-|		|-nopicmode //无图界面  
-|		|-cardleftpicmode //通用界面  
-|		|-bottombar //底栏界面  
-|		|-...  
-|  
-|---set(预设)  
-|		|-function(args) //此处为插件进入时预设区域，在这设置插件额外设置，评论模块右上方按钮，评论栏，setSettingPageExtra，setCommonPageToolbar，setCommonPageButtons  
-|  
-|---unset(清理)  
-|		|-function(args) //此处为插件退出时清理区域  
-|  
-|---init(初始化)  
-|		|-function(args) //这里调用ExView.workers.fav.listloader，ExView.workers.index.loader，ExView.workers.type.loader  
-|  
-|---flags(规则)  
-|		|-indexflag(首页规则)  
-|		|		|-loader //发起请求  
-|		|		|-finder //处理数据  
-|		|		|-countloader //页数  
-|		|		|-countfinder //页数,return {pagecount:-1|0|int}  
-|		|-typeflag(类型规则)  
-|		|		|-loader(args)  
-|		|		|-finder(args)  
-|		|-listflag(类型内页规则)  
-|		|		|-loader(args)  
-|		|		|-finder(args)  
-|		|		|-countloader(args)  
-|		|		|-countfinder(args)  
-|		|-searchflag(搜索规则)  
-|		|		|-loader(args)  
-|		|		|-finder(args) //args.multsearch存在时，综合搜索args.multsearch回调  
-|		|		|-countloader(args)  
-|		|		|-countfinder(args)  
-|		|-contentflag(内容页规则)  
-|		|		|-loader(args) //目录  
-|		|		|-finder(args) //目录  
-|		|		|-infoloader(args) //简介信息  
-|		|		|-infofinder(args) //简介信息  
-|		|-parseflag(解析规则)  
-|		|		|-loader(args)  
-|		|		|-finder(args) //args.download存在时为下载解析，调用chapterpredownload；args.download不存在时为浏览解析，调用chapterviewer  
-|		|-commentflag(评论页规则)  
-|		|		|-loader(args)  
-|		|		|-finder(args) //调用ExView.modules.myMessages.appendMessage展示评论  
-|		|-previewflag(预览页规则)  
-|		|		|-loader(args)  
-|		|		|-finder(args)  
-|		|		|-more(args)  
-|		|-pageimgflag(图片页解析规则)  
-|		|		|-parser(args) //args:[pagedom,pageurl,url,result,loadimgurl]，单页图片的解析，使用args.loadimgurl回调  
-|		|-updateflag(最新更新规则)  
-|		|	|-loader(args)  
-|		|		|-finder(args) //args.multupdate回调  
-|		|-hotflag(热门推荐规则)  
-|				|-loader(args)  
-|				|-finder(args) //args.multhot回调  
-|  
-|---fns(寄存) //寄存插件变量和函数的区域，可用plugfns调用此区域，如：plugfns(args.plugin).pagedeal()  
+	ExView插件  
+	|---info(配置) //使用pluginfo函数可调用此区域，如：pluginfo(args.plugin).name  
+	|		|-name  
+	|		|-version  
+	|		|-icon  
+	|		|-db  
+	|		|-author  
+	|		|-apihost  
+	|		|-cdn  
+	|		|-type //image|text  
+	|		|-typeName //漫画|条漫|轻小说  
+	|		|-description //插件简介  
+	|		|-theme //主题色："blue","red","pink","purple","deeppurple","indigo","lightblue","cyan","teal","green","lightgreen","lime","yellow","amber","orange","deeporange","brown","gray","bluegray","black"  
+	|		|-pagetitle:["<br>","收藏","首页","类型","下载"]  
+	|		|-download:true //是否开启下载功能  
+	|		|-setting:true //是否开启设置功能  
+	|		|-lazyload:true //图片延迟加载  
+	|		|-nativeres:true //本地请求，对于要改UA，Referer的要开  
+	|		|-vphotomode:true //图片连续浏览模式  
+	|		|-watermode:true //瀑布流模式  
+	|		|-gallerymode:true //图库模式  
+	|		|-typelistmode:true //类型列表界面  
+	|		|-landscapemode //横屏模式  
+	|		|-animation //开启动画效果  
+	|		|-nightmode //暗夜模式  
+	|		|-listallmode //连续列表模式  
+	|		|-slidemode //拖动模式  
+	|		|-autoturnpage //总是跳转首页  
+	|		|-elegancemode //优雅界面  
+	|		|-smallpicmode //小图界面  
+	|		|-nopicmode //无图界面  
+	|		|-cardleftpicmode //通用界面  
+	|		|-bottombar //底栏界面  
+	|		|-...  
+	|  
+	|---set(预设)  
+	|		|-function(args) //此处为插件进入时预设区域，在这设置插件额外设置，评论模块右上方按钮，评论栏，setSettingPageExtra，setCommonPageToolbar，setCommonPageButtons  
+	|  
+	|---unset(清理)  
+	|		|-function(args) //此处为插件退出时清理区域  
+	|  
+	|---init(初始化)  
+	|		|-function(args) //这里调用ExView.workers.fav.listloader，ExView.workers.index.loader，ExView.workers.type.loader  
+	|  
+	|---flags(规则)  
+	|		|-indexflag(首页规则)  
+	|		|		|-loader //发起请求  
+	|		|		|-finder //处理数据  
+	|		|		|-countloader //页数  
+	|		|		|-countfinder //页数,return {pagecount:-1|0|int}  
+	|		|-typeflag(类型规则)  
+	|		|		|-loader(args)  
+	|		|		|-finder(args)  
+	|		|-listflag(类型内页规则)  
+	|		|		|-loader(args)  
+	|		|		|-finder(args)  
+	|		|		|-countloader(args)  
+	|		|		|-countfinder(args)  
+	|		|-searchflag(搜索规则)  
+	|		|		|-loader(args)  
+	|		|		|-finder(args) //args.multsearch存在时，综合搜索args.multsearch回调  
+	|		|		|-countloader(args)  
+	|		|		|-countfinder(args)  
+	|		|-contentflag(内容页规则)  
+	|		|		|-loader(args) //目录  
+	|		|		|-finder(args) //目录  
+	|		|		|-infoloader(args) //简介信息  
+	|		|		|-infofinder(args) //简介信息  
+	|		|-parseflag(解析规则)  
+	|		|		|-loader(args)  
+	|		|		|-finder(args) //args.download存在时为下载解析，调用chapterpredownload；args.download不存在时为浏览解析，调用chapterviewer  
+	|		|-commentflag(评论页规则)  
+	|		|		|-loader(args)  
+	|		|		|-finder(args) //调用ExView.modules.myMessages.appendMessage展示评论  
+	|		|-previewflag(预览页规则)  
+	|		|		|-loader(args)  
+	|		|		|-finder(args)  
+	|		|		|-more(args)  
+	|		|-pageimgflag(图片页解析规则)  
+	|		|		|-parser(args) //args:[pagedom,pageurl,url,result,loadimgurl]，单页图片的解析，使用args.loadimgurl回调  
+	|		|-updateflag(最新更新规则)  
+	|		|	|-loader(args)  
+	|		|		|-finder(args) //args.multupdate回调  
+	|		|-hotflag(热门推荐规则)  
+	|				|-loader(args)  
+	|				|-finder(args) //args.multhot回调  
+	|  
+	|---fns(寄存) //寄存插件变量和函数的区域，可用plugfns调用此区域，如：plugfns(args.plugin).pagedeal()  
 
 ##二.请求处理模块  
 ###1.请求模块ExView.modules.curl  
