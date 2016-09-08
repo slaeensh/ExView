@@ -6,7 +6,6 @@ ExView.Plugins({
 		author:"光腚菊",
 		db: "exhentai",
 		apihost: "https://exhentai.org/",
-		//"http://exhentai.org/","http://cc.xwind.ml/ehentai/"
 		pagetitle: ["<br>", "收藏", "首页", "类型", "下载"],
 		download: true,
 		lazyload: true,
