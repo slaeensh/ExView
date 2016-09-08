@@ -201,6 +201,7 @@ ExView插件本地安装文件为epk格式，需用ExView自带文件管理器�
 	setSettingPageExtra(flag) //Object [{name,title,type:"input"},{name,title,color,style,type:"button"},{name,title,style,type:"textarea"},{name,title,type:"checkbox"},{name,title,value,min,max,step,type:"slider",{value,type:"html"}}]或String  
 	setCommonPageToolbar(flag) //Object {photoclass,inputclass,inputvalue,buttonclass,buttonvalue}或String  
 	setCommonPageButtons //Object {webpage:true||false}或String  
+	getresult(str) //返回删除所有行的字符串
 	getstr(reg,str,index) //单独正则处理字符，返回一个String值  
 	getstrs(str,reg,find) //正则处理字符，返回一个Array值  
 	getquery(str,selector) //选择器处理字符，返回一个Array值  

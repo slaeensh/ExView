@@ -442,7 +442,7 @@ header:{"User-Agent":"ExView","Referer":pluginfo(args.plugin).apihost},
 				console.log(args);
 				return {
 					reg: /<div class="pic_box"><a href="\/photos-view-id-(\d+).html">/g,
-					str: getresult(args.result),
+					str: getresult(args.result).replace(/<!--<div\s*class="pic_box">/g,""),
 					find: "$1",
 					successfn: function(rr,arr,i,result) {
 						if (array_count(result)) {
@@ -558,7 +558,7 @@ header:{"User-Agent":"ExView","Referer":pluginfo(args.plugin).apihost},
 				console.log(args);
 				return {
 					reg: /<div class="pic_box"><a.*?photos-view-id-(\d+).html".*?data-original="((?!<).*?)"/g,
-					str: getresult(args.result),
+					str: getresult(args.result).replace(/<!--<div\s*class="pic_box">/g,""),
 					find: "$1{{separator}}$2",
 					successfn: function(rr, arr, i, result) {
 						rr = rr.split("{{separator}}");
