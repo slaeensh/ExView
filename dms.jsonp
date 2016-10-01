@@ -70,7 +70,7 @@
 	//弹幕显示
 	LoadDMS('【最新版本】<a href="javascript:void(0);" onclick="event.stopPropagation();window.open(\''+updatepath+'\',\'_system\');">'+newestversion+'</a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="event.stopPropagation();window.open(\'https://www.pgyer.com/exview\',\'_system\');">官网下载</a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="event.stopPropagation();window.open(\'http://pan.baidu.com/s/1dFCvgsx\',\'_system\');">网盘下载</a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="event.stopPropagation();window.open(\''+(iscrosswalk()?'http://www.coolapk.com/apk/com.gentle.exview.plus':'http://www.coolapk.com/apk/com.gentle.exview')+'\',\'_system\');">酷安下载</a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="event.stopPropagation();window.open(\'https://github.com/ghostgzt/ExView\',\'_system\');">GitHub</a>'
 	+'<div><a href="javascript:void(0);" onclick="event.stopPropagation();window.open(\''+(iscrosswalk()?updatepath:'http://www.coolapk.com/apk/com.gentle.exview')+'\',\'_system\');" class="button button-fill">用户反馈</a></div>'
-	+'<div style="padding: 10px;border: 3px black solid;"><div style="margin:-3px -3px 10px -3px;width:100%;text-align:center;border-bottom:1px solid;">★名人堂★</div>'
+	+'<div style="padding: 10px;border: 3px black solid;"><div style="margin:-3px -3px 10px -3px;width:100%;text-align:center;border-bottom:1px solid;">★特别鸣谢★</div>'
 	
 	+(vipjson.map(function(user){return getvipuser(user);}).join(""))
 	
