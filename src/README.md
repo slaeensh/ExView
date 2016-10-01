@@ -83,7 +83,7 @@ ExView插件本地安装文件为epk格式，需用ExView自带文件管理器�
 	|		|-pageimgflag(图片页解析规则)  
 	|		|		|-parser(args) //args:[pagedom,pageurl,url,result,loadimgurl]，单页图片的解析，使用args.loadimgurl回调  
 	|		|-updateflag(最新更新规则)  
-	|		|	|-loader(args)  
+	|		|		|-loader(args)  
 	|		|		|-finder(args) //args.multupdate回调  
 	|		|-hotflag(热门推荐规则)  
 	|				|-loader(args)  
@@ -166,7 +166,7 @@ ExView插件本地安装文件为epk格式，需用ExView自带文件管理器�
 	ExView.modules.rulefind({  
 		query:true,  
 		str:result,  
-		selector:".test li:eq(3)",  
+		selector:".test li:child(3)",  
 		successfn:function(rr, arr, i, result){  
 			//rr类型为HTMLObj  
 			//rr为匹配到当前指针的项  
@@ -201,6 +201,13 @@ ExView插件本地安装文件为epk格式，需用ExView自带文件管理器�
 	setSettingPageExtra(flag) //Object [{name,title,type:"input"},{name,title,color,style,type:"button"},{name,title,style,type:"textarea"},{name,title,type:"checkbox"},{name,title,value,min,max,step,type:"slider",{value,type:"html"}}]或String  
 	setCommonPageToolbar(flag) //Object {photoclass,inputclass,inputvalue,buttonclass,buttonvalue}或String  
 	setCommonPageButtons //Object {webpage:true||false}或String  
+	plugfns(args.plugin) //调用寄存区的变量和函数
+	pluginfo(args.plugin) //返回储存的插件设置
+	pluginfo(args.plugin,true) //返回默认的插件设置
+	pluginfo(args.plugin,true,key,value) //修改储存的插件设置中的某一个项
+	mySession.nowpluginfo //临时设置集合
+	mySession.nowplugin //当前插件
+	mySession.gobalsettings //全局设置集合
 	getresult(str) //返回删除所有行的字符串
 	getstr(reg,str,index) //单独正则处理字符，返回一个String值  
 	getstrs(str,reg,find) //正则处理字符，返回一个Array值  
