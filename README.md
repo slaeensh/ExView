@@ -1,7 +1,7 @@
 # ExView - Excellent Viewer  
 作者：Gentle Kwan  
 支付宝捐赠：ghostgzt@163.com  
-MD设计风格的ACGN的多功能阅览平台
+MD设计风格的ACGN的多功能阅览平台  
 ExView支持所有CPU平台Android4.4以上的系统  
 ExView+支持ARM和X86的CPU平台Android4.0以上的系统  
 #ExView更新日志  
