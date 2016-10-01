@@ -1,0 +1,559 @@
+ExView.Plugins({
+	info: {
+		name: "微漫画",
+		version: "2.2",
+		author:"Gentle",
+		icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAABSlBMVEUAAADjThvmUx/gSRbDPg7iTxypKQDZSRfpUh7aTBnIPg/SQhGuLgLIQRDvWCKyNAfOQxO4OArwWiSpKQDORRTuURysMATqUx/SRxXiShepKgC+OwyzNAe3NAeuMgXjUR28OAqtMAPTSBa0NQivMgXqViGvMwa7Ogu2Nwn/45X/2Y3/1Ir/zIP/yoLcVyPQRxXMQRHXQRC4NQizMQT/7p7/6pr/5Zf+35T/25D/0Yj/zob/x4H/w37+v3r4s2/zl1brj1HhgkXXeD/QYCvqXSfTWiXgUR7fThvZSxjUSBayMwe7LwL70of4zIL/xX7/w333wnr1vHb7tnP2q2rvrmnrqGXzomPqomH2nV7pjlHpi03fi03qhEfxfkLXekHadj7ndjzocznbZS3gZC3LYCzIXyvJUyDqVB/WUx/ERxbCPQ66PA22Ow3ENAcfh2H6AAAAKXRSTlMAwxH73M+8qEga+e7l4N/Avbq2tLOwpaOjk46Jfnp2aGJXS0Q2MhQNB7QEA1QAAADFSURBVBjTY8AOOET5hJgQXCbxWHuXdFU4n5PVRdfEnllekpGRAyzP6u4WYZvI7OYQ484IEmD3MPTQ0zM0TNDUTGYH8pU8PaMCfHxDkvSC7DK4JTgZRAwiLbQsNE1MHfX1DVz1BRh4Dex0dCy1tczMXHMdzUO5GFiywqz9dK20tUyjvR3MA1kYpI2cbW38rXUsNZ28M+PTFBjUBY2dg22ASsKzjYyMZYHWaMjw5KQ4xaV6GXvxK0OcqqYoJczGJianwkAUAABg1CGtEFC04QAAAABJRU5ErkJggg==",
+		db: "weibomh",
+		apihost: "http://manhua.weibo.cn/",
+		pagetitle: ["<br>", "收藏", "首页", "类型", "下载"],
+		download: true,
+		lazyload: true,
+		setting: true,
+		cdn: ""
+	},
+	set: function(args) {
+		args = args || {}
+	},
+	unset: function(args) {
+		args = args || {}
+	},
+	init: function(args) {
+		args = args || {}
+		ExView.workers.fav.listloader({
+			callback: function() {
+				//ExView.workers.index.loader();
+				//ExView.workers.type.loader()
+			}
+		})
+	},
+	flags: {
+		indexflag: {
+			loader: function(args) {
+				return {
+					url: pluginfo(args.plugin).apihost + "comic/home/ajax_index_recommend",
+					method: "POST",
+					data: "page=" + (args.page || 1),
+					timeout: 120,
+					postform:true,
+					referer:pluginfo(args.plugin).apihost,
+					successfn: function(result, header) {
+						args.callback({
+							img:pluginfo(args.plugin).icon,
+							multpage:true,
+							result: result,
+							header: header
+						})
+					}
+				}
+			},
+			finder: function(args) {
+				return {
+					json: true,
+					str: args.result,
+					successfn: function(json) {
+						json = ((json || {}).data || {}).data;
+						if (array_count(json)) {
+							json.forEach(function(item) {
+								args.callback({
+									pid: getstr(/c\/(\d+)/g, item.link_url),
+									title: item.title,
+									img: item.image_url,
+									stitle: "更新至 "+item.chapter_num+"话",
+									comment: 1
+								})
+							})
+						} else {
+							args.callback();
+						}
+					}
+				}
+			},
+			countloader: false,
+			countfinder: function(args) {
+				return {
+					json: true,
+					str: args.result,
+					successfn: function(json) {
+						try{
+							var pagecount = Math.ceil(json.data.total_num / 10);
+						}catch(e){
+							var pagecount = -1;
+						}
+						args.callback({
+							pagecount:pagecount || -1
+						})
+					}
+				}
+			}
+		},
+		typeflag: {
+			loader: function(args) {
+				return {
+					url: pluginfo(args.plugin).apihost,
+					method: "GET",
+					timeout: 120,
+					successfn: function(result, header) {
+						args.callback({
+							result: result,
+							header: header
+						})
+					}
+				}
+			},
+			finder: function(args) {
+				args.callback({
+					title: '首页',
+					img: pluginfo(args.plugin).icon,
+					group: {
+						name: "daohang",
+						title: "导航"
+					},
+					content: '首页'
+				});
+				args.callback({
+					tid: '',
+					listflag: 'new',
+					title: '更新',
+					img: pluginfo(args.plugin).icon,
+					group: {
+						name: "daohang",
+						title: "导航"
+					},
+					content: '更新'
+				});
+				args.callback({
+					tid: '',
+					listflag: 'top',
+					title: '排行',
+					img: pluginfo(args.plugin).icon,
+					group: {
+						name: "daohang",
+						title: "导航"
+					},
+					content: '排行'
+				});
+				return {
+					reg: /\/i\/category\/(\d+)">((?!<).*?)</g,
+					str: args.result,
+					find: "$1" + "{{separator}}" + "$2",
+					successfn: function(rr) {
+						rr = rr.split("{{separator}}");
+						if (array_count(rr)) {
+							args.callback({
+								tid: rr[0],
+								title: rr[1],
+								img: pluginfo(args.plugin).icon,
+								group: {
+									name: "fenlei",
+									title: "分类"
+								},
+								content: rr[1]
+							})
+						}
+					}
+				}
+			},
+		},
+		listflag: {
+			loader: function(args) {
+				return {
+					url: pluginfo(args.plugin).apihost + (args.flag ? (args.flag == "top" ? "comic/home/ajax_rank_list?rank_type=read" : "comic/home/ajax_recent_update?page=" + (args.page || 1)) : "comic/home/ajax_category?page=" + (args.page || 1) + "&cate_id=" + args.tid),
+					method: "GET",
+					timeout: 120,
+					successfn: function(result, header) {
+						args.callback({
+							multpage:true,
+							result: result,
+							header: header
+						})
+					},
+					showinfo: {
+						text: '正在加载...' + ((args.page > 1) ? '<br>第' + args.page + '页' : ''),
+						name: '【' + args.title + '】',
+						title: args.title,
+						img: args.img
+					}
+				}
+			},
+			finder: function(args) {
+				return {
+					json: true,
+					str: args.result,
+					successfn: function(json) {
+						json = json.data;
+						if (array_count(json)) {
+							plugfns(args.plugin).pagedeal(json,args)
+						} else {
+							args.callback();
+						}
+					}
+				}
+			},
+			countloader: false,
+			countfinder: function(args) {
+				return {
+					json: true,
+					str: args.result,
+					successfn: function(json) {
+						try{
+							var pagecount = Math.ceil(json.total_num / 10);
+						}catch(e){
+							var pagecount = -1;
+						}
+						args.callback({
+							pagecount:pagecount || -1
+						})
+					}
+				}
+			}
+		},
+		searchflag: {
+			loader: function(args) {
+				return {
+					url: pluginfo(args.plugin).apihost + "comic/home/ajax_search",
+					method: "POST",
+					data: "kw=" + encodeURIComponent(args.keyword) + "&page=" + (args.page || 1),
+					timeout: 120,
+					postform:true,
+					referer:pluginfo(args.plugin).apihost,
+					successfn: function(result, header) {
+						args.callback({
+							multpage:true,
+							result: result,
+							header: header
+						})
+					}
+				}
+			},
+			finder: function(args) {
+				return {
+					json: true,
+					str: args.result,
+					successfn: function(json) {
+						json = json.data;
+						if (array_count(json)) {
+							plugfns(args.plugin).pagedeal(json, args)
+						} else {
+							args.callback()
+						}
+					}
+				}
+			},
+			countloader: false,
+			countfinder: function(args) {
+				return {
+					json: true,
+					str: args.result,
+					successfn: function(rr) {
+						try{
+							var pagecount = Math.ceil(json.total_num / 10);
+						}catch(e){
+							var pagecount = -1;
+						}
+						args.callback({
+							pagecount:pagecount || -1
+						})
+					}
+				}
+			}
+		},
+		contentflag: {
+			loader: function(args) {
+				return {
+					url: pluginfo(args.plugin).apihost + "c/" + args.pid,
+					method: "GET",
+					timeout: 120,
+					successfn: function(result, header) {
+						args.callback({
+							result: result,
+							header: header
+						})
+					}
+				}
+			},
+			finder: function(args) {
+				return {
+					reg: /\/p\/(\d+)" class="V_CLR_G6"><div class="dir_c T_ellipsis">((?!<).*?)<\/div>/g,
+					str: args.result,
+					find: {
+						pid: args.pid,
+						cid: "$1",
+						title: "$2"
+					},
+					successfn: function(rr, arr, i, result) {
+						if (array_count(rr)) {
+							if (!args.checkupdate) {
+								args.callback({
+									id: i,
+									newest: (args.newest && i == 0),
+									pid: rr.pid,
+									cid: rr.cid,
+									title: rr.title,
+									count: arr.length,
+									reverse: 0
+								})
+							} else {
+								rr = result.pop();
+								args.callback({
+									pid: rr.pid,
+									cid: rr.cid,
+									title: rr.title
+								})
+								return true
+							}
+						} else {
+							args.callback()
+						}
+					}
+				}
+			},
+			infoloader: false,
+			infofinder: function(args) {
+				return {
+					json: true,
+					str: getstr(/_BFD.BFD_INFO\s*=\s*(.*?)\s*;/g, getresult(args.result)),
+					successfn: function(rr, arr, i, result) {
+						var img = rr.pic;
+						var title = rr.title;
+						var update = getLocalTime(rr.ptime * 1000);
+						var author = rr.author;
+						var tags = rr.kw;
+						args.callback({
+							name: title,
+							img: img,
+							added: args.data,
+							description: "<p>" + "【作者】" + author + "<br>" + "【类型】" + tags + "<br>" + "【更新】" + update + "</p>",
+							comment: 1,
+							preview: 0,
+							tags: gettag(title) + gettag(author) + gettag(tags.split(",")),
+							sourceurl: pluginfo(args.plugin).apihost + "c/" + args.pid
+						});
+						return true
+					}
+				}
+			}
+		},
+		parseflag: {
+			loader: function(args) {
+				return {
+					url: pluginfo(args.plugin).apihost + "p/" + args.cid,
+					method: "GET",
+					timeout: 120,
+					successfn: function(result, header) {
+						args.callback({
+							result: result,
+							header: header
+						})
+					}
+				}
+			},
+			finder: function(args) {
+				return {
+					json: true,
+					str: getstr(/var\s*json_content\s*=\s*(.*?);\r*\n/g, args.result),
+					successfn: function(rr, arr, i, result) {
+						if (array_count(rr)) {
+							rr = rr.page;
+							var source = rr.map(function(item) {
+								return item.mobileImgUrl
+							});
+							if (args.download) {
+								args.callback({
+									source: source,
+									download: args.download,
+									plugin: args.plugin
+								})
+							} else {
+								args.callback({
+									source: source,
+									type: "image",
+									startindex: (args.startindex || 0),
+									lazyload: pluginfo(args.plugin).lazyload,
+									zoom: true,
+									title: args.title
+								})
+							}
+						} else {
+							args.callback()
+						}
+						return true
+					}
+				}
+			}
+		},
+		commentflag: {
+			loader: function(args) {
+				return {
+					url: pluginfo(args.plugin).apihost + "comic/comment/get_comic_comment?comic_id=" + args.pid + "&page=" + (args.page || 1),
+					method: "GET",
+					timeout: 120,
+					successfn: function(result, header) {
+						if (result) {
+							args.callback({
+								result: result,
+								header: header,
+								commentbrowser: {
+									url: pluginfo(args.plugin).apihost + "c/" + args.pid,
+									title: '评论 - ' + pluginfo(args.plugin).name + '<br><span style="font-size:16px">' + (myContent.name || "") + '</span>',
+									browser: false,
+									flag: ""
+								}
+							})
+						} else {
+							args.callback()
+						}
+					}
+				}
+			},
+			finder: function(args) {
+				return {
+					json: true,
+					str: args.result,
+					successfn: function(rr, arr, i, result) {
+						if (array_count(rr)) {
+							var pagecount = Math.ceil(rr.data.total_num / 20);
+							var comments = rr.data.data;
+							for (var key in comments) {
+								args.callback({
+									page: (args.page || 1),
+									pagecount: pagecount,
+									comment: {
+										text: comments[key]["content"],
+										name: comments[key].user_info.sina_nickname,
+										avatar: comments[key].user_info.avatar,
+										type: "received",
+										label: comments[key]["create_time"],
+										day: "",
+										time: "",
+										reverse: 1,
+										extra: ''
+									}
+								})
+							}
+						}
+					}
+				}
+			},
+			send: false
+		},
+		previewflag: {
+			loader: false,
+			finder: false
+		},
+		pageimgflag: {
+			parser: false,
+		},
+		updateflag: {
+			loader: function(args) {
+				return {
+					url: pluginfo(args.plugin).apihost + "comic/home/ajax_recent_update?page=" + (args.page || 1),
+					method: "GET",
+					timeout: 120,
+					successfn: function(result, header) {
+						args.callback({
+							result: result,
+							header: header
+						})
+					}
+				}
+			},
+			finder: function(args) {
+				return {
+					json: true,
+					str: args.result,
+					successfn: function(rr) {
+						rr = rr.data;
+						if (array_count(rr)) {
+							plugfns(args.plugin).pagedeal(rr, args)
+						} else {
+							args.callback()
+						}
+					}
+				}
+			}
+		},
+		hotflag: {
+			loader: function(args) {
+				if (parseInt(args.page || 1) > 1) {
+					args.callback();
+					return false
+				}
+				return {
+					url: pluginfo(args.plugin).apihost + "comic/home/ajax_rank_list?rank_type=read",
+					method: "GET",
+					timeout: 120,
+					successfn: function(result, header) {
+						args.callback({
+							result: result,
+							header: header
+						})
+					}
+				}
+			},
+			finder: function(args) {
+				return {
+					json: true,
+					str: args.result,
+					successfn: function(rr) {
+						rr = rr.data;
+						if (array_count(rr)) {
+							plugfns(args.plugin).pagedeal(rr, args)
+						} else {
+							args.callback()
+						}
+					}
+				}
+			}
+		}
+	},
+	fns: {
+		pagedeal: function(rr, args) {
+			args = args || {};
+			rr.forEach(function(item) {
+				var pid = item.comic_id;
+				var img = item.cover;
+				var title = item.name;
+				var author = gettext(item.artists);
+				var description = item.description;
+				var update = item.update_time?getLocalTime(item.update_time * 1000):"";
+				var content = (update?("更新日期 " + update):item.watching_focus);
+				if (args.multupdate) {
+					args.callback(obj_contact(args, {
+						pid: pid,
+						img: img,
+						title: title,
+						content: content
+					}));
+					return false
+				}
+				if (args.multhot) {
+					args.callback(obj_contact(args, {
+						pid: pid,
+						img: img,
+						title: title,
+						content: content
+					}));
+					return false
+				}
+				if (args.multsearch) {
+					args.callback(obj_contact(args, {
+						pid: pid,
+						img: img,
+						title: title,
+						content: content
+					}));
+					return false
+				}
+				args.callback({
+					pid: pid,
+					title: title,
+					img: img,
+					stitle: author,
+					content: (update ? ("【更新】" + update + "<br>") : "") + (description ? ("【简介】" + description + "<br>") : ""),
+					comment: 1
+				})
+			})
+		}
+	}
+})
