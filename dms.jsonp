@@ -57,7 +57,7 @@
 				ExView.modules.pluginpage.init(1);
 			};		
 			if((localStorage.ExView_NotificationId!=notificationid||ExView.version!=newestversion)&&localStorage.ExView_Licence){
-				ExView.fw.alert(notificationcontent+'<div><style>.modal.modal-in .modal-text{overflow:auto;overflow-y:auto;overflow-x:hidden;}</style></div>',mySession.modaltitleextra+notificationtitle,function(){
+				ExView.fw.alert(notificationcontent+'<div><style>.modal.modal-in{top:calc(50% + 60px);}.modal.modal-in .modal-text{overflow:auto;overflow-y:auto;overflow-x:hidden;}</style></div>',mySession.modaltitleextra+notificationtitle,function(){
 				if(ExView.version==newestversion){
 					localStorage.ExView_NotificationId=notificationid;notificationfn();
 				}else{
