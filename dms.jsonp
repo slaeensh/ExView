@@ -1,8 +1,8 @@
 (function(){
 	//初始化设置
-	var notificationid="20161002";
+	var notificationid="20161001";
 	var newestversion="2.2.0";
-	var notificationinfo="重新上传了2.2.0版本，请之前下载过的用户重新下载一次，修复了一个大bug!<br>声明：ExView是一个浏览器应用，如果你发现有侵权资源，请不要找我，去找相关站点，你们反编译可以看见ExView就是一个基于WebView的套壳浏览器，你们总不能说浏览器变换一下页面界面就侵权吧！<br>备注:安卓4.0-4.4，请去网盘下载高性能版或使用ExView+,4.4以上WebView性能低下的ROM系统也去下载ExView+,可以不爱请勿伤害！<br>通告：新架构2.2已经不兼容2.2以下的来源，请更新应用版本至2.2以上，和更新所有来源至2.2以上！";
+	var notificationinfo="声明：ExView是一个浏览器应用，如果你发现有侵权资源，请不要找我，去找相关站点，你们反编译可以看见ExView就是一个基于WebView的套壳浏览器，你们总不能说浏览器变换一下页面界面就侵权吧！<br>备注:安卓4.0-4.4，请去网盘下载高性能版或使用ExView+,4.4以上WebView性能低下的ROM系统也去下载ExView+,可以不爱请勿伤害！<br>通告：新架构2.2已经不兼容2.2以下的来源，请更新应用版本至2.2以上，和更新所有来源至2.2以上！";
 	var newestversioninfo="1.添加AVG游戏引擎【可以推Gal了（/.\）】<br>2.升级引擎架构，优化列表功能和界面【虽然是几只字，但背后工程量庞大！】<br>3.增加自定义下载目录【支持外置SD卡和OTG移动硬盘】<br>4.增加自动分页切割功能<br>5.增加从右到左反向阅读功能<br>6.增加自动阅读功能<br>7.增加横屏界面<br>8.至此ExView已经是一款涵盖ACGN的多功能阅览平台了【ACGN二次元，齐了~】<br>备注:安卓4.0-4.4，请去网盘下载高性能版或使用ExView+,4.4以上WebView性能低下的ROM系统也去下载ExView+,可以不爱请勿伤害！";
 	var updatepath=iscrosswalk()?'http://www.coolapk.com/apk/com.gentle.exview.plus':'https://www.pgyer.com/exview';//'http://www.coolapk.com/apk/com.gentle.exview';
 	var getdms=function(flag){
@@ -55,7 +55,9 @@
 			var notificationcontent=((ExView.version!=newestversion)?"Gentle 发布 ExView "+newestversion+"<br>"+newestversioninfo:notificationinfo);
 			var notificationfn=function(){
 				ExView.modules.pluginpage.init(1);
-			};		if((localStorage.ExView_NotificationId!=notificationid||ExView.version!=newestversion)&&localStorage.ExView_Licence){ExView.fw.alert(notificationcontent,notificationtitle,function(){
+			};		
+			if((localStorage.ExView_NotificationId!=notificationid||ExView.version!=newestversion)&&localStorage.ExView_Licence){
+				ExView.fw.alert(notificationcontent+'<div><style>.modal.modal-in .modal-text{overflow:auto;overflow-y:auto;overflow-x:hidden;}</style></div>',mySession.modaltitleextra+notificationtitle,function(){
 				if(ExView.version==newestversion){
 					localStorage.ExView_NotificationId=notificationid;notificationfn();
 				}else{
@@ -66,11 +68,13 @@
 	}catch(e){}
 
 	//弹幕显示
-	LoadDMS('【最新版本】<a href="javascript:void(0);" onclick="event.stopPropagation();window.open(\''+updatepath+'\',\'_system\');">'+newestversion+'</a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="event.stopPropagation();window.open(\'https://www.pgyer.com/exview\',\'_system\');">官网下载</a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="event.stopPropagation();window.open(\'http://pan.baidu.com/s/1dFCvgsx\',\'_system\');">网盘下载</a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="event.stopPropagation();window.open(\''+(iscrosswalk()?'http://www.coolapk.com/apk/com.gentle.exview.plus':'http://www.coolapk.com/apk/com.gentle.exview')+'\',\'_system\');">酷安下载</a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="event.stopPropagation();window.open(\'https://github.com/ghostgzt/ExView\',\'_system\');">GitHub</a><br>'
+	LoadDMS('【最新版本】<a href="javascript:void(0);" onclick="event.stopPropagation();window.open(\''+updatepath+'\',\'_system\');">'+newestversion+'</a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="event.stopPropagation();window.open(\'https://www.pgyer.com/exview\',\'_system\');">官网下载</a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="event.stopPropagation();window.open(\'http://pan.baidu.com/s/1dFCvgsx\',\'_system\');">网盘下载</a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="event.stopPropagation();window.open(\''+(iscrosswalk()?'http://www.coolapk.com/apk/com.gentle.exview.plus':'http://www.coolapk.com/apk/com.gentle.exview')+'\',\'_system\');">酷安下载</a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="event.stopPropagation();window.open(\'https://github.com/ghostgzt/ExView\',\'_system\');">GitHub</a>'
+	+'<div><a href="javascript:void(0);" onclick="event.stopPropagation();window.open(\''+(iscrosswalk()?updatepath:'http://www.coolapk.com/apk/com.gentle.exview')+'\',\'_system\');" class="button button-fill">用户反馈</a></div>'
+	+'<div style="padding: 10px;border: 3px black solid;"><div style="margin:-3px -3px 10px -3px;width:100%;text-align:center;border-bottom:1px solid;">★名人堂★</div>'
 	
 	+(vipjson.map(function(user){return getvipuser(user);}).join(""))
 	
-	+'<br><div><a href="javascript:void(0);" onclick="event.stopPropagation();window.open(\''+(iscrosswalk()?updatepath:'http://www.coolapk.com/apk/com.gentle.exview')+'\',\'_system\');" class="button button-fill">用户反馈</a></div><div style="background: black;"><img style="display:none;" src="img/loading.png" width="100%"  onclick="event.stopPropagation();$$(this).next().css(\'background-image\',\'url(img/loading.png)\');$$(this).css(\'display\',\'none\');$$(this).next().css(\'margin-top\',\'0\')">'
+	+'</div><div style="background: black;"><img style="display:none;" src="img/loading.png" width="100%"  onclick="event.stopPropagation();$$(this).next().css(\'background-image\',\'url(img/loading.png)\');$$(this).css(\'display\',\'none\');$$(this).next().css(\'margin-top\',\'0\')">'
 	+'<svg class="xhr" xmlns="http://www.w3.org/2000/svg" style="width:100%;height: 20em;background-size: cover;background-position: top;background-image:url(img/loading.png); box-sizing:border-box" onclick="event.stopPropagation();$$(this).css(\'background-image\',\'none\');$$(this).prev().css(\'display\',\'block\');$$(this).css(\'margin-top\',\'-20em\')">'
 	+(dmsjson.map(function(dms){return getdms(dms);}).join(""))
 	+'</svg>'
