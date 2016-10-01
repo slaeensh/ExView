@@ -3,7 +3,7 @@
 	var notificationid="20161001";
 	var newestversion="2.2.0";
 	var notificationinfo="声明：ExView是一个浏览器应用，如果你发现有侵权资源，请不要找我，去找相关站点，你们反编译可以看见ExView就是一个基于WebView的套壳浏览器，你们总不能说浏览器变换一下页面界面就侵权吧！<br>备注:安卓4.0-4.4，请去网盘下载高性能版或使用ExView+,4.4以上WebView性能低下的ROM系统也去下载ExView+,可以不爱请勿伤害！";
-	var newestversioninfo="1.添加AVG游戏引擎【可以推Gal了（/.\）】<br>2.升级引擎架构，优化列表功能和界面【虽然是几只字，但背后工程量庞大！】<br>3.增加自定义下载目录【支持外置SD卡和OTG移动硬盘】<br>4.增加自动分页切割功能<br>5.增加从右到左反向阅读功能<br>6.增加自动阅读功能<br>7.增加横屏界面<br>8.至此ExView已经是一款涵盖ACGN的多功能阅览器了【ACGN二次元，齐了~】<br>备注:安卓4.0-4.4，请去网盘下载高性能版或使用ExView+,4.4以上WebView性能低下的ROM系统也去下载ExView+,可以不爱请勿伤害！";
+	var newestversioninfo="1.添加AVG游戏引擎【可以推Gal了（/.\）】<br>2.升级引擎架构，优化列表功能和界面【虽然是几只字，但背后工程量庞大！】<br>3.增加自定义下载目录【支持外置SD卡和OTG移动硬盘】<br>4.增加自动分页切割功能<br>5.增加从右到左反向阅读功能<br>6.增加自动阅读功能<br>7.增加横屏界面<br>8.至此ExView已经是一款涵盖ACGN的多功能阅览平台了【ACGN二次元，齐了~】<br>备注:安卓4.0-4.4，请去网盘下载高性能版或使用ExView+,4.4以上WebView性能低下的ROM系统也去下载ExView+,可以不爱请勿伤害！";
 	var updatepath=iscrosswalk()?'http://www.coolapk.com/apk/com.gentle.exview.plus':'http://www.coolapk.com/apk/com.gentle.exview';//https://www.pgyer.com/exview
 	var getdms=function(flag){
 		var x=flag.x;
