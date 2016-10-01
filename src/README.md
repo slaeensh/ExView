@@ -40,20 +40,20 @@ ExView插件本地安装文件为epk格式，需用ExView自带文件管理器�
 	|		|-...  
 	|  
 	|---set(预设)  
-	|		|-function(args) //此处为插件进入时预设区域，在这设置插件额外设置，评论模块右上方按钮，评论栏，setSettingPageExtra，setCommonPageToolbar，setCommonPageButtons  
+	|		|-function(args) //此处为插件进入时预设区域
 	|  
 	|---unset(清理)  
 	|		|-function(args) //此处为插件退出时清理区域  
 	|  
 	|---init(初始化)  
-	|		|-function(args) //这里调用ExView.workers.fav.listloader，ExView.workers.index.loader，ExView.workers.type.loader  
+	|		|-function(args) 
 	|  
 	|---flags(规则)  
 	|		|-indexflag(首页规则)  
 	|		|		|-loader //发起请求  
 	|		|		|-finder //处理数据  
 	|		|		|-countloader //页数  
-	|		|		|-countfinder //页数,return {pagecount:-1|0|int}  
+	|		|		|-countfinder //页数 
 	|		|-typeflag(类型规则)  
 	|		|		|-loader(args)  
 	|		|		|-finder(args)  
@@ -64,7 +64,7 @@ ExView插件本地安装文件为epk格式，需用ExView自带文件管理器�
 	|		|		|-countfinder(args)  
 	|		|-searchflag(搜索规则)  
 	|		|		|-loader(args)  
-	|		|		|-finder(args) //args.multsearch存在时，综合搜索args.multsearch回调  
+	|		|		|-finder(args)
 	|		|		|-countloader(args)  
 	|		|		|-countfinder(args)  
 	|		|-contentflag(内容页规则)  
@@ -74,22 +74,21 @@ ExView插件本地安装文件为epk格式，需用ExView自带文件管理器�
 	|		|		|-infofinder(args) //简介信息  
 	|		|-parseflag(解析规则)  
 	|		|		|-loader(args)  
-	|		|		|-finder(args) //args.download存在时为下载解析，调用chapterpredownload；args.download不存在时为浏览解析，调用chapterviewer  
+	|		|		|-finder(args) 
 	|		|-commentflag(评论页规则)  
 	|		|		|-loader(args)  
-	|		|		|-finder(args) //调用ExView.modules.myMessages.appendMessage展示评论  
+	|		|		|-finder(args) 
 	|		|-previewflag(预览页规则)  
 	|		|		|-loader(args)  
 	|		|		|-finder(args)  
-	|		|		|-more(args)  
 	|		|-pageimgflag(图片页解析规则)  
-	|		|		|-parser(args) //args:[pagedom,pageurl,url,result,loadimgurl]，单页图片的解析，使用args.loadimgurl回调  
+	|		|		|-parser(args) 
 	|		|-updateflag(最新更新规则)  
 	|		|		|-loader(args)  
-	|		|		|-finder(args) //args.multupdate回调  
+	|		|		|-finder(args) 
 	|		|-hotflag(热门推荐规则)  
 	|				|-loader(args)  
-	|				|-finder(args) //args.multhot回调  
+	|				|-finder(args) 
 	|  
 	|---fns(寄存) //寄存插件变量和函数的区域，可用plugfns调用此区域，如：plugfns(args.plugin).pagedeal()  
 
@@ -99,45 +98,6 @@ ExView插件本地安装文件为epk格式，需用ExView自带文件管理器�
 		url:""  
 		...  
 	})  
-	/******************************源码片段****************************************/  
-	var url = flag.url||"";  
-	var method = flag.method;  
-	var timeout = flag.timeout;  
-	var data = flag.data;  
-	var encoding = flag.encoding;  
-	var autoencode=(flag.autoencode!=false?true:false);  
-	var mimetype = flag.mimetype;  
-	var header = flag.header || {};  
-	var successfn = flag.successfn;  
-	var threat = getTimeNow();  
-	var progressname=flag.progressname||"progress_"+threat;  
-	var progressfn = flag.progressfn ||  
-	function(loaded, total) {  
-		$$("."+progressname).html(loaded + (total ? "/" + total: "") + " Bytes");  
-	};  
-	var threatfn = flag.threatfn;  
-	var errorfn = flag.errorfn;  
-	var completefn = flag.completefn;  
-	var canclefn = flag.canclefn;  
-	var otherfn = flag.otherfn/*||function(status,xhr){  
-		alert(status);  
-		console.log(xhr);  
-	}*/;  
-	var jsback=flag.jsback||flag;  
-	var timeoutfn = flag.timeoutfn;  
-	var showinfo = flag.showinfo;  
-	var showinfoimg = "img/logo.png";  
-	var showinfoname="";  
-	var showinfotitle = "";  
-	var showinfocancle = "";  
-	if (typeof(showinfo) == "object") {  
-		showinfoimg = showinfo.img || showinfoimg;  
-		showinfoname = showinfo.name || showinfoname;  
-		showinfotitle = showinfo.title || showinfotitle;  
-		showinfocancle = showinfo.cancle || showinfocancle;  
-		showinfo = showinfo.text || "";  
-	}  
-	/******************************源码片段****************************************/  
 ###2.数据处理模块ExView.modules.rulefind  
 ####2.1 正则处理  
 	ExView.modules.rulefind({  
@@ -177,32 +137,8 @@ ExView插件本地安装文件为epk格式，需用ExView自带文件管理器�
 			//result为匹配到的所有项  
 		},  
 		...  
-	});  
-	/******************************源码片段****************************************/  
-		var reg = flag.reg||null;  
-		var json = flag.json||false;  
-		var query=flag.query||false;  
-		var selector=flag.selector||"";		  
-		var str = flag.str||"";  
-		var find = flag.find||""; //"$1" + "|" + "$2" + "|" + "$3" + "|" + "$4"  
-		var successfn = flag.successfn;  
-		var errorfn = flag.errorfn;  
-		var beforefn = flag.beforefn;  
-		var afterfn = flag.afterfn;  
-		var forbeforefn = flag.forbeforefn;  
-		var forafterfn = flag.forafterfn;  
-		if (!reg && !json && !query) {  
-			beforefn && beforefn(flag);  
-			var result = successfn && successfn(flag);  
-			afterfn && afterfn(flag);  
-			callback && callback();  
-			return result;  
-		}  
-	/******************************源码片段****************************************/		  
+	});    
 ##三.基本函数  
-	setSettingPageExtra(flag) //Object [{name,title,type:"input"},{name,title,color,style,type:"button"},{name,title,style,type:"textarea"},{name,title,type:"checkbox"},{name,title,value,min,max,step,type:"slider",{value,type:"html"}}]或String  
-	setCommonPageToolbar(flag) //Object {photoclass,inputclass,inputvalue,buttonclass,buttonvalue}或String  
-	setCommonPageButtons //Object {webpage:true||false}或String  
 	plugfns(args.plugin) //调用寄存区的变量和函数
 	pluginfo(args.plugin) //返回储存的插件设置
 	pluginfo(args.plugin,true) //返回默认的插件设置
@@ -232,11 +168,17 @@ ExView插件本地安装文件为epk格式，需用ExView自带文件管理器�
 	getlistimg(pid,plugin,source) //获取项目的图片路径，source为boolean值，表返回来源值  
 	chapterpredownload(args) //设置下载解析回调 {source download plugin}  
 	chapterviewer(args,readtype,handle) //设置浏览解析回调 {source type startindex lazyload zoom title}  
-	ExView.modules.myMessages.appendMessage(args,true) //添加评论，args:{text name avatar type label day time}  
 	ExView.tools.base64.encode(str) //返回base64值  
 	ExView.tools.base64.decode(base64str) //返回string值  
 	ExView.tools.md5.hex_md5(str) //返回MD5值  
 	ExView.fw.hidePreloader();//隐藏弹窗Model  
+	ExView.fw.alert(...);//提示弹窗  
+	ExView.fw.confirm(...);//确认弹窗  
+	ExView.fw.propmt(...);//输入弹窗
+	ExView.fw.modalLogin(...);//登陆弹窗
+	ExView.fw.modalPassword(...);//密码弹窗
+	ExView.fw.showIndicator();//显示加载指示器
+	ExView.fw.hideIndicator();//隐藏加载指示器
 	...  
   
 ##四.后语  
