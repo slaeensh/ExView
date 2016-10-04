@@ -1,0 +1,882 @@
+ExView.Plugins({
+	info: {
+		name: "E淑女漫画",
+		version: "2.2",
+		icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAWklEQVQ4jWP8//8/AyWAiSLdDAwMLAwMDAzp7EIYzpj58x0jjA2Th4kh86njAmy2EgsodgF1vYAcOOgBhyxPOxcg24YtQNGjkSouoE0gMjAQnyYodgHjgOdGAGwOKyVznIrZAAAAAElFTkSuQmCC",
+		db: "exlady",
+		apihost: "http://g.e-hentai.org/",
+		pagetitle: ["<br>", "收藏", "首页", "类型", "下载"],
+		download: true,
+		lazyload: true,
+		setting: true,
+		settingextra: getui([{
+			name: "typebox",
+			title: "类型方块界面",
+			type: "checkbox"
+		}, {
+			name: "clearcache",
+			title: "自动清除页面缓存",
+			type: "checkbox"
+		}, {
+			name: "nativeres",
+			title: "使用本地请求",
+			type: "checkbox"
+		}, {
+			name: "requestcookie",
+			title: "网络请求Cookie",
+			resizable: true,
+			type: "textarea"
+		}, {
+			value: '<li><div class="col-50"><a href="#" class="button button-raised open-login-screen">登录E淑女</a></div></li>',
+			type: 'html'
+		}]),
+		nativeres: true,
+		typebox: false,
+		cachepath: "ExView/Cache/ExLady/Cache",
+		covercachepath: "ExView/Cache/ExLady/CoverCache",
+		clearcache: false,
+		commentbar: true,
+		commentbuttons: '',
+		commentplaceholder: 'Message',
+		commentsendbutton: '发送',
+		theme: "black",
+		requestcookie: "",
+		cdn: ""
+	},
+	set: function(args) {
+		args = args || {}
+	},
+	unset: function(args) {
+		args = args || {};
+		setloginscreen(false)
+	},
+	init: function(args) {
+		plugfns().initloginscreen({
+			plugin: mySession.nowplugin
+		});
+		ExView.workers.fav.listloader({
+			callback: function() {
+				pluginfo(args.plugin, false, "cacheheader", {
+					"Cookie": pluginfo(args.plugin).requestcookie
+				});
+				//ExView.workers.index.loader();
+				//ExView.workers.type.loader();
+			}
+		})
+	},
+	flags: {
+		indexflag: {
+			loader: function(args) {
+				return {
+					url: pluginfo(args.plugin).apihost + "?page=" + (parseInt(args.page || 1) - 1),
+					timeout: 120,
+					nativerequest: pluginfo(args.plugin).nativeres,
+					header: {
+						"Cookie": pluginfo(args.plugin).requestcookie
+					},
+					successfn: function(result, header) {
+						args.callback && args.callback({
+							img: plugfns(args.plugin).typelistext["index"]["imgurl"],
+							multpage: true,
+							result: result,
+							header: header
+						})
+					}
+				}
+			},
+			finder: function(args) {
+				return {
+					reg: plugfns(args.plugin).pagerule,
+					str: args.result,
+					find: plugfns(args.plugin).pagefind,
+					successfn: function(rr) {
+						if (rr) {
+							plugfns(args.plugin).pagedeal(rr, args)
+						} else {
+							args.callback()
+						}
+					}
+				}
+			},
+			countloader: false,
+			countfinder: function(args) {
+				return {
+					reg: plugfns(args.plugin).pagecountrule,
+					str: args.result,
+					find: plugfns(args.plugin).pagecountfind,
+					successfn: function(rr) {
+						rr = (rr || "").split("{{separator}}");
+						args.callback && args.callback({
+							pagecount: (array_count(rr) ? (Math.ceil(parseInt(rr[2].replace(/\,/g, "")) / 25)) : "-1")
+						})
+					}
+				}
+			}
+		},
+		typeflag: {
+			loader: false,
+			finder: function(args) {
+				return {
+					successfn: function(rr) {
+						if (pluginfo(args.plugin).typebox) {
+							var typestring = '<table border="1" style="position: absolute;border-collapse: collapse;width: 100%;height:100%;border:1px solid #000000"><tbody><tr>' + plugfns(args.plugin).gettypebox('', plugfns(args.plugin).typelistext["index"]["title"], plugfns(args.plugin).typelistext["index"]["imgurl"], '') + plugfns(args.plugin).gettypebox('advsearch', plugfns(args.plugin).typelistext["topfive"]["title"], plugfns(args.plugin).typelistext["topfive"]["imgurl"], '&f_doujinshi=1&f_manga=1&f_artistcg=1&f_gamecg=1&f_western=1&f_non-h=1&f_imageset=1&f_cosplay=1&f_asianporn=1&f_misc=1&f_sname=on&f_stags=on&f_sdesc=on&f_storr=on&f_sdt2=on&f_sh=on&f_sr=on&f_srdd=5') var typeint = 3;
+							for (var key in plugfns(args.plugin).typelist) {
+								typestring += (typeint == 1 ? "<tr>" : "") + plugfns(args.plugin).gettypebox(key, plugfns(args.plugin).typelist[key]["title"], plugfns(args.plugin).typelist[key]["imgurl"], '') + (typeint == 3 ? "</tr>" : "");
+								if (typeint == 3) {
+									typeint = 1
+								} else {
+									typeint++
+								}
+							}
+							typestring += '</tbody></table>';
+							addtypelist(typestring, 2);
+							try {
+								clearInterval(mySession.lazyload.typelistlazyloadser)
+							} catch (e) {}
+							$$("#typelist").onscroll = ""
+						} else {
+							args.callback({
+								listbg: true,
+								title: plugfns(args.plugin).typelistext["index"]["title"],
+								img: plugfns(args.plugin).typelistext["index"]["imgurl"],
+								content: plugfns(args.plugin).typelistext["index"]["title"]
+							});
+							args.callback({
+								tid: 'advsearch',
+								listbg: true,
+								listflag: '&f_doujinshi=1&f_manga=1&f_artistcg=1&f_gamecg=1&f_western=1&f_non-h=1&f_imageset=1&f_cosplay=1&f_asianporn=1&f_misc=1&f_sname=on&f_stags=on&f_sdesc=on&f_storr=on&f_sdt2=on&f_sh=on&f_sr=on&f_srdd=5',
+								title: plugfns(args.plugin).typelistext["topfive"]["title"],
+								img: plugfns(args.plugin).typelistext["topfive"]["imgurl"],
+								content: plugfns(args.plugin).typelistext["topfive"]["title"]
+							});
+							for (var key in plugfns(args.plugin).typelist) {
+								args.callback({
+									tid: key,
+									listbg: true,
+									title: plugfns(args.plugin).typelist[key]["title"],
+									img: plugfns(args.plugin).typelist[key]["imgurl"],
+									content: plugfns(args.plugin).typelist[key]["title"]
+								})
+							}
+						}
+					}
+				}
+			},
+		},
+		listflag: {
+			loader: function(args) {
+				return {
+					url: pluginfo(args.plugin).apihost + "?f_" + args.keyword + "=1&f_apply=Apply+Filter" + "&page=" + (parseInt(args.page || 1) - 1) + args.flag,
+					method: "GET",
+					timeout: 120,
+					nativerequest: pluginfo(args.plugin).nativeres,
+					header: {
+						"Cookie": pluginfo(args.plugin).requestcookie
+					},
+					successfn: function(result, header) {
+						args.callback && args.callback({
+							multpage: true,
+							result: result,
+							header: header
+						})
+					}
+				}
+			},
+			finder: function(args) {
+				return {
+					reg: plugfns(args.plugin).pagerule,
+					str: args.result,
+					find: plugfns(args.plugin).pagefind,
+					successfn: function(rr) {
+						if (rr) {
+							plugfns(args.plugin).pagedeal(rr, args)
+						} else {
+							args.callback()
+						}
+					}
+				}
+			},
+			countloader: false,
+			countfinder: function(args) {
+				return {
+					reg: plugfns(args.plugin).pagecountrule,
+					str: args.result,
+					find: plugfns(args.plugin).pagecountfind,
+					successfn: function(rr) {
+						rr = (rr || "").split("{{separator}}");
+						args.callback && args.callback({
+							pagecount: (array_count(rr) ? (Math.ceil(parseInt(rr[2].replace(/\,/g, "")) / 25)) : "-1")
+						})
+					}
+				}
+			}
+		},
+		searchflag: {
+			loader: function(args) {
+				return {
+					url: pluginfo(args.plugin).apihost + "?f_doujinshi=1&f_manga=1&f_artistcg=1&f_gamecg=1&f_western=1&f_non-h=1&f_imageset=1&f_cosplay=1&f_asianporn=1&f_misc=1&f_search=" + (args.keyword) + "&f_apply=Apply+Filter" + "&page=" + (parseInt(args.page || 1) - 1),
+					method: "GET",
+					timeout: 120,
+					nativerequest: pluginfo(args.plugin).nativeres,
+					header: {
+						"Cookie": pluginfo(args.plugin).requestcookie
+					},
+					successfn: function(result, header) {
+						args.callback && args.callback({
+							multpage: true,
+							result: result,
+							header: header
+						})
+					}
+				}
+			},
+			finder: function(args) {
+				return {
+					reg: plugfns(args.plugin).pagerule,
+					str: args.result,
+					find: plugfns(args.plugin).pagefind,
+					successfn: function(rr, arr, i) {
+						console.log(rr);
+						if (rr) {
+							plugfns(args.plugin).pagedeal(rr, args)
+						} else {
+							if (!args.multsearch) {
+								args.callback()
+							} else {
+								args.multsearch()
+							}
+						}
+					}
+				}
+			},
+			countloader: false,
+			countfinder: function(args) {
+				return {
+					reg: plugfns(args.plugin).pagecountrule,
+					str: args.result,
+					find: plugfns(args.plugin).pagecountfind,
+					successfn: function(rr) {
+						rr = (rr || "").split("{{separator}}");
+						args.callback && args.callback({
+							pagecount: (array_count(rr) ? (Math.ceil(parseInt(rr[2].replace(/\,/g, "")) / 25)) : "-1")
+						})
+					}
+				}
+			}
+		},
+		contentflag: {
+			loader: function(args) {
+				return {
+					url: pluginfo(args.plugin).apihost + "g/" + args.pid.replace(/\_/g, "/") + "/",
+					method: "GET",
+					timeout: 120,
+					nativerequest: pluginfo(args.plugin).nativeres,
+					header: {
+						"Cookie": pluginfo(args.plugin).requestcookie
+					},
+					successfn: function(result, header) {
+						args.callback && args.callback({
+							result: result,
+							header: header
+						})
+					}
+				}
+			},
+			finder: function(args) {
+				return {
+					reg: plugfns(args.plugin).pagecountrule,
+					str: args.result,
+					find: plugfns(args.plugin).pagecountfind,
+					successfn: function(rr) {
+						if (rr) {
+							rr = rr.split("{{separator}}");
+							var pid = args.pid;
+							var arr = Math.ceil(parseInt(rr[2].replace(/\,/g, "")) / 40);
+							if (!args.checkupdate) {
+								var result = new Array();
+								for (var i = 0; i < arr; i++) {
+									result[i] = args.callback({
+										id: i,
+										newest: (args.newest && i == 0),
+										pid: pid,
+										cid: (i + 1),
+										title: "第" + (i + 1) + "话",
+										count: arr,
+										reverse: 0
+									})
+								}
+								console.log(result);
+								return result
+							} else {
+								return {
+									pid: pid,
+									cid: arr,
+									title: "第" + arr + "话"
+								}
+							}
+						} else {
+							if (!args.checkupdate) {
+								args.callback()
+							}
+						}
+					}
+				}
+			},
+			infoloader: function(args) {
+				return {
+					successfn: function() {
+						args.callback && args.callback({
+							result: args.result,
+							header: args.header
+						})
+					},
+					showinfo: {
+						text: '正在加载内容页...',
+						title: "内容页",
+						name: getlistname(args.pid),
+						img: getlistimg(args.pid)
+					}
+				}
+			},
+			infofinder: function(args) {
+				console.log((args));
+				return {
+					reg: /<div\s*id="gd1"><img\s*src="(.*?)"\s*alt=""\s*\/><\/div><\/div><div\s*id="gd2"><h1\s*id="gn">(.*?)<\/h1>/g,
+					str: args.result,
+					find: "$1{{separator}}$2",
+					successfn: function(rr, arr, i, result) {
+						console.log(rr);
+						rr = rr.split("{{separator}}");
+						var pid = args.pid;
+						args.str = args.result;
+						args.name = rr[1];
+						var more = '';
+						var tag = gettags(args.result, /\/tag\/(.*?)\"/g, "$1") var img = ((rr[0].substr(0, 2) == "//") ? ("http:" + rr[0]) : rr[0]);
+						var piccount = getstr(/of\s*([\d,\,]+)\s*images<\/p>/, args.result);
+						img = getimgload(img, args.plugin, {
+							cachepath: pluginfo(args.plugin).covercachepath,
+							cachetime: 0,
+							cacheheader: {
+								"Cookie": pluginfo(args.plugin).requestcookie
+							}
+						});
+						myContent.imgcount = piccount || 0;
+						args.callback({
+							name: rr[1],
+							img: img,
+							added: args.data,
+							description: more + "<p>共" + (piccount || 0) + "张图片</p>",
+							comment: 1,
+							preview: 1,
+							tags: gettag(rr[1]) + tag
+						});
+						return true
+					}
+				}
+			}
+		},
+		parseflag: {
+			loader: function(args) {
+				return {
+					url: pluginfo(args.plugin).apihost + "g/" + args.pid.replace(/\_/g, "/") + "?p=" + (parseInt(args.cid) - 1),
+					method: "GET",
+					data: "",
+					timeout: 120,
+					nativerequest: pluginfo(args.plugin).nativeres,
+					header: {
+						"Cookie": pluginfo(args.plugin).requestcookie
+					},
+					successfn: function(result, header) {
+						args.callback && args.callback({
+							result: result,
+							header: header
+						})
+					}
+				}
+			},
+			finder: function(args) {
+				console.log(args);
+				return {
+					reg: /<div\s*class="gdtm"\s*style="height:(\d+)px"><div\s*style=".*?height:(\d+)px;\s*background:transparent\s*url\((.*?)\)\s*-(\d+)px\s*0\s*no-repeat"><a\s*href="(.*?)"/g,
+					str: args.result,
+					find: "$1" + "{{separator}}" + "$2" + "{{separator}}" + "$3" + "{{separator}}" + "$4" + "{{separator}}" + "$5",
+					successfn: function(rr, arr, i, result) {
+						if (array_count(result)) {
+							var source = [];
+							source = result.map(function(item) {
+								var rr = item.split("{{separator}}");
+								return getpageload(rr[4], args.plugin, {
+									cachetime: 3600,
+									cacheheader: {
+										"Cookie": pluginfo(args.plugin).requestcookie
+									}
+								})
+							});
+							console.log(source);
+							if (args.download) {
+								args.callback({
+									source: source,
+									download: args.download,
+									plugin: args.plugin
+								})
+							} else {
+								args.callback({
+									source: source,
+									type: "image",
+									startindex: (args.startindex || 0),
+									lazyload: pluginfo(args.plugin).lazyload,
+									zoom: true,
+									title: args.title
+								})
+							}
+						} else {
+							args.callback()
+						}
+						return true
+					}
+				}
+			}
+		},
+		commentflag: {
+			loader: function(args) {
+				return {
+					url: pluginfo(args.plugin).apihost + "g/" + args.pid.replace(/\_/g, "/") + "/?hc=1",
+					method: "GET",
+					timeout: 120,
+					nativerequest: pluginfo(args.plugin).nativeres,
+					header: {
+						"Cookie": pluginfo.requestcookie
+					},
+					successfn: function(result, header) {
+						if (result) {
+							args.callback && args.callback({
+								result: result,
+								header: header,
+								commentbrowser: {
+									url: pluginfo(args.plugin).apihost + "g/" + args.pid.replace(/\_/g, "/") + "/?hc=1",
+									title: '评论 - ' + pluginfo(args.plugin).name + '<br><span style="font-size:16px">' + (myContent.name || "") + '</span>',
+									browser: false,
+									flag: ""
+								}
+							})
+						} else {
+							args.callback && args.callback()
+						}
+					}
+				}
+			},
+			finder: function(args) {
+				console.log(args);
+				return {
+					reg: /<a\s*name="c\d+"><\/a><div\s*class="c1"><div\s*class="c2"><div\s*class="c3">Posted\s*on\s*(.*?)\s*UTC\s*by:\s*&nbsp;\s*<a\s*href=".*?">(.*?)<\/a><\/div><div\s*class="c\d+\s*nosel"(.*?)<div\s*class="c6"\s*id="comment_\d+">(.*?)<\/div><div\s*class="c7"/g,
+					str: args.result,
+					find: "$1{{separator}}$2{{separator}}$3{{separator}}$4",
+					successfn: function(rr, arr, i, result) {
+						if (rr) {
+							rr = rr.split("{{separator}}");
+							args.callback && args.callback({
+								page: (args.page || 1),
+								pagecount: 1,
+								comment: {
+									text: (rr[3] || ""),
+									name: gettext(rr[1] || ""),
+									avatar: "",
+									type: (rr[2].indexOf('>Edit</a>') != "-1" ? "sent" : "received"),
+									label: "",
+									day: rr[0].split(",")[0],
+									time: rr[0].split(",")[1],
+									reverse: 0,
+									extra: '<style>.c8{padding-left:56px;white-space:nowrap;}</style>'
+								}
+							})
+						}
+					}
+				}
+			},
+			send: function(args) {
+				return {
+					url: pluginfo(args.plugin).apihost + "g/" + args.pid.replace(/\_/g, "/") + "/?hc=1",
+					method: "POST",
+					data: (args.value ? ("commenttext=" + encodeURIComponent(args.value) + "&postcomment=Post+Comment") : ""),
+					timeout: 120,
+					nativerequest: pluginfo(args.plugin).nativeres,
+					header: {
+						"Cookie": pluginfo(args.plugin).requestcookie,
+						"Content-Type": "application/x-www-form-urlencoded"
+					},
+					successfn: function(result, header) {
+						if (result) {
+							args.callback && args.callback({
+								text: args.value,
+								name: "我",
+								avatar: "",
+								type: "sent",
+								label: "",
+								day: "",
+								time: "",
+								reverse: 0,
+								extra: '<style>.c8{padding-left:56px;white-space:nowrap;}</style>'
+							})
+						} else {
+							args.callback()
+						}
+					}
+				}
+			}
+		},
+		previewflag: {
+			loader: function(args) {
+				return {
+					url: pluginfo(args.plugin).apihost + "g/" + args.pid.replace(/\_/g, "/") + "?p=" + (parseInt(args.page || 1) - 1),
+					method: "GET",
+					timeout: 120,
+					nativerequest: pluginfo(args.plugin).nativeres,
+					header: {
+						"Cookie": pluginfo.requestcookie
+					},
+					successfn: function(result, header) {
+						if (result) {
+							args.callback && args.callback({
+								result: result,
+								header: header,
+							})
+						} else {
+							args.callback && args.callback()
+						}
+					}
+				}
+			},
+			finder: function(args) {
+				return {
+					reg: /<div\s*class="gdtm"\s*style="height:\d+px"><div\s*style="margin:1px\s*auto\s*0;\s*width:(\d+)px;\s*height:(\d+)px;\s*background:transparent\s*url\((.*?)\)\s*([\-,\d]+)px\s*0\s*no-repeat"><a\s*href="(.*?)"/g,
+					str: args.result,
+					find: "$1" + "{{separator}}" + "$2" + "{{separator}}" + "$3" + "{{separator}}" + "$4" + "{{separator}}" + "$5",
+					successfn: function(rr, arr, i, result) {
+						if (rr) {
+							rr = rr.split("{{separator}}");
+							var imgurl = ((rr[2].substr(0, 2) == "//") ? ("http:" + rr[2]) : rr[2]);
+							var pageurl = (rr[4].substr(0, 1) == "/" ? (pluginfo(args.plugin).apihost.split("//")[0] + "//" + (pluginfo(args.plugin).apihost.split("//")[1].split("/")[0])) + "/" + rr[4].substring(1) : rr[4]);
+							args.callback({
+								page: (args.page || 1),
+								pagecount: myContent.items.length,
+								preview: {
+									imgurl: imgurl,
+									pageurl: pageurl,
+									width: rr[0],
+									height: rr[1],
+									leftoffset: rr[3],
+									topoffset: 0
+								}
+							})
+						}
+					}
+				}
+			}
+		},
+		pageimgflag: {
+			parser: function(args) {
+				return {
+					reg: /<img\s*src="(.*?)"\s*style="/g,
+					str: (args.result || "").replace(/<img/g, '\n<img'),
+					find: "$1",
+					successfn: function(rr) {
+						var nlcode = getstr(/return\s*nl\('([\d-]+)'\)/, args.result);
+						if (nlcode && args.pagedom) {
+							var nlurl = args.pageurl + ((args.pageurl + "").indexOf("?") > -1 ? "&" : "?") + "nl=" + nlcode;
+							nlurl = getpageload(nlurl, args.plugin, {
+								cachetime: 3600,
+								cacheheader: {
+									"Cookie": pluginfo(args.plugin).requestcookie
+								}
+							})
+						} else {
+							nlurl = args.url
+						}
+						args.callback({
+							imgurl: rr,
+							otherurl: nlurl
+						})
+					}
+				}
+			}
+		},
+		updateflag: {
+			loader: function(args) {
+				return {
+					url: pluginfo(args.plugin).apihost + "?page=" + (parseInt(args.page || 1) - 1),
+					timeout: 120,
+					nativerequest: pluginfo(args.plugin).nativeres,
+					header: {
+						"Cookie": pluginfo(args.plugin).requestcookie
+					},
+					successfn: function(result, header) {
+						args.callback && args.callback({
+							result: result,
+							header: header
+						})
+					}
+				}
+			},
+			finder: function(args) {
+				return {
+					reg: plugfns(args.plugin).pagerule,
+					str: args.result,
+					find: plugfns(args.plugin).pagefind,
+					successfn: function(rr) {
+						console.log(JSON.stringify(rr));
+						if (rr) {
+							plugfns(args.plugin).pagedeal(rr, args)
+						}
+					}
+				}
+			}
+		},
+		hotflag: {
+			loader: function(args) {
+				return {
+					url: pluginfo(args.plugin).apihost + "?f_advsearch=1&f_apply=Apply+Filter" + "&page=" + (parseInt(args.page || 1) - 1) + "&f_doujinshi=1&f_manga=1&f_artistcg=1&f_gamecg=1&f_western=1&f_non-h=1&f_imageset=1&f_cosplay=1&f_asianporn=1&f_misc=1&f_sname=on&f_stags=on&f_sdesc=on&f_storr=on&f_sdt2=on&f_sh=on&f_sr=on&f_srdd=5",
+					method: "GET",
+					timeout: 120,
+					nativerequest: pluginfo(args.plugin).nativeres,
+					header: {
+						"Cookie": pluginfo(args.plugin).requestcookie
+					},
+					successfn: function(result, header) {
+						args.callback && args.callback({
+							result: result,
+							header: header
+						})
+					}
+				}
+			},
+			finder: function(args) {
+				return {
+					reg: plugfns(args.plugin).pagerule,
+					str: args.result,
+					find: plugfns(args.plugin).pagefind,
+					successfn: function(rr) {
+						console.log(JSON.stringify(rr));
+						if (rr) {
+							plugfns(args.plugin).pagedeal(rr, args)
+						}
+					}
+				}
+			}
+		}
+	},
+	fns: {
+		initloginscreen: function(args) {
+			args = args || {};
+			setloginscreen('<div class="login-screen-title">EXHENTAI</div><form><div class="list-block inputs-list"><ul><li class="item-content"><div class="item-inner"><div class="item-title label">用户名</div><div class="item-input item-input-field"><input type="text" id="login-username" name="username" placeholder="Your Username"></div></div></li><li class="item-content"><div class="item-inner"><div class="item-title label">密码</div><div class="item-input item-input-field"><input id="login-password" type="password" name="password" placeholder="Your Password"></div></div></li></ul></div><div class="content-block"><a href="#" id="login-login" class="button button-big">登录</a><a href="#" id="login-reg" class="button button-big">注册</a><a href="#" id="login-cancle" class="button button-big close-login-screen">取消</a></div><div style="position:absolute;bottom:0;text-align:center;margin:0;padding:0;width:100%"><div class="list-block-label">ExView不提供和传播任何资源，所有资源均来源于互联网！</div></div></form>');
+			var loginexhentai = function(user, passwd) {
+					ExView.modules.curl({
+						url: "https://forums.e-hentai.org/index.php?act=Login&CODE=01",
+						method: "POST",
+						data: "returntype=8&CookieDate=1&b=d&bt=pone&UserName=" + user + "&PassWord=" + passwd + "&ipb_login_submit=Login%21",
+						timeout: 120,
+						header: {
+							"Content-Type": "application/x-www-form-urlencoded"
+						},
+						nativerequest: true,
+						successfn: function(result, header) {
+							try {
+								var headers = header["Set-Cookie"];
+								var cookies = "";
+								for (var key in headers) {
+									cookies += headers[key].split(";")[0] + ";"
+								}
+								console.log(result);
+								console.log(header);
+								var user = getstr(/logged in as:((?!<).*?)</i, result);
+								ExView.fw.hidePreloader();
+								if (!user) {
+									ExView.fw.hidePreloader();
+									ExView.fw.alert("可能用户名和密码错误，或者尝试过多验证限制，晚点再试！", "登陆失败");
+									return false
+								}
+								ExView.modules.curl({
+									url: mySession.nowpluginfo.apihost,
+									method: "GET",
+									timeout: 120,
+									header: {
+										"Cookie": cookies
+									},
+									nativerequest: true,
+									successfn: function(result, header) {
+										var headers = header["Set-Cookie"];
+										for (var key in headers) {
+											cookies += (headers[key] || "").split(";")[0] + ";"
+										}
+										ExView.fw.hidePreloader();
+										try {
+											if (cookies) {
+												pluginfo(args.plugin, 1, "requestcookie", cookies);
+												ExView.fw.alert("已经成功登陆E淑女！", "登陆成功", function() {
+													$$(".login-screen.modal-in").css("display", "none");
+													mySession.plugins[args.plugin].init(args)
+												})
+											} else {
+												ExView.fw.alert("未知错误！", "登陆失败")
+											}
+										} catch (e) {
+											ExView.fw.alert(e, "登陆失败")
+										}
+									},
+									showinfo: {
+										text: '正在登陆用户<br>' + user,
+										title: "登陆",
+										img: pluginfo(args.plugin).icon
+									}
+								})
+							} catch (e) {
+								ExView.fw.alert(e, "登陆失败")
+							}
+						},
+						showinfo: {
+							text: "正在登陆E淑女...",
+							title: "登陆",
+							img: pluginfo(args.plugin).icon
+						}
+					})
+				}
+			$$("#login-reg").on("click", function() {
+				window.open("http://forums.e-hentai.org/index.php?act=Reg&CODE=00", "_blank", 'location=no')
+			});
+			$$("#login-login").on("click", function() {
+				if ($$("#login-username").val() && $$("#login-password").val()) {
+					loginexhentai($$("#login-username").val(), $$("#login-password").val())
+				} else {
+					ExView.fw.alert("用户名和密码不能为空！", "ExView")
+				}
+			});
+			$$("#login-cancle").on("click", function() {})
+		},
+		gettypebox: function(tid, title, img, flag, fn) {
+			return '<td style="overflow: hidden;width: 33%;"><div onclick="' + (!tid && !fn ? ('ExView.workers.index.loader({turnpage:1,front:1,img:\'' + img + '\',title:\'' + title + '\',flag:\'' + flag + '\'})') : ('ExView.workers.list.loader({keyword:\'' + tid + '\',img:\'' + img + '\',title:\'' + title + '\',flag:\'' + flag + '\',turnpage:1})')) + '" style="background-image:url(' + img + ');width:100%;height:100%;background-repeat:no-repeat;background-size:cover;text-align:center;background-size:100%100%;"></div><div style="font-size:16px;text-align:center;background-color: black;margin-top:-24px;opacity: 0.8;position: relative;color: white;">' + title + '</div></td>'
+		},
+		typelistext: {
+			"index": {
+				title: "首页",
+				imgurl: getbaiduimg("d3304434970a304eeae53a66d7c8a786c8175c12")
+			},
+			"topfive": {
+				title: "五星推荐",
+				imgurl: getbaiduimg("e65387c379310a5540bf2322b04543a983261036")
+			}
+		},
+		typelist: {
+			"doujinshi": {
+				title: "同人",
+				imgurl: getbaiduimg("1b309b19ebc4b745b51c4ac0c8fc1e17888215c5")
+			},
+			"manga": {
+				title: "漫画",
+				imgurl: getbaiduimg("61aa13c79f3df8dc6b797347ca11728b46102801")
+			},
+			"artistcg": {
+				title: "画家CG",
+				imgurl: getbaiduimg("574621f790529822470fc615d0ca7bcb0b46d489")
+			},
+			"gamecg": {
+				title: "游戏CG",
+				imgurl: getbaiduimg("9be791014a90f6038e4160913e12b31bb251eddd")
+			},
+			"western": {
+				title: "西方风格",
+				imgurl: getbaiduimg("6a897ce736d12f2ec04351b648c2d56284356803")
+			},
+			"non-h": {
+				title: "全年龄",
+				imgurl: getbaiduimg("8137b022720e0cf3e088b12d0d46f21fbf09aa4a")
+			},
+			"imageset": {
+				title: "图集",
+				imgurl: getbaiduimg("3448fc2a2834349b48489153ceea15ce37d3be7b")
+			},
+			"cosplay": {
+				title: "角色扮演",
+				imgurl: getbaiduimg("20c8e3ef76094b36c7a8e53ba4cc7cd98c109d97")
+			},
+			"asianporn": {
+				title: "亚洲艺术",
+				imgurl: getbaiduimg("574621f790529822462bc715d0ca7bcb0b46d4b5")
+			},
+			"misc": {
+				title: "杂项",
+				imgurl: getbaiduimg("574621f7905298224624c715d0ca7bcb0b46d4b2")
+			}
+		},
+		pagerule: /<td\s*class="itdc"><a\s*href="(.*?)"><img\s*src="(.*?)"\s*alt="(.*?)"\s*class="ic"\s*\/><\/a><\/td><td\s*class="itd"\s*style="white-space:nowrap">(.*?)<\/td><td\s*class="itd"\s*onmouseover="preload_pane_image_delayed\((.*?)\)"\s*onmouseout="preload_pane_image_cancel\(\)"><div\s*style="position:relative"><div\s*class="it2"\s*id="i(.*?)"\s*style="border:(.*?)(~|\/)t\/(.*?).jpg(~|")(.*?)<\/div><div\s*class="it3">(.*?)<\/div><div\s*class="it5"><a\s*href="(.*?)"\s*onmouseover="show_image_pane\((.*?)\)"\s*onmouseout="hide_image_pane\((.*?)\)">(.*?)<\/a><\/div><div\s*class="it4"><div\s*class="ir\s*it4r"\s*style="background-position:(.*?)"><\/div>\s*<\/div><\/div><\/td><td\s*class="itu"><div><a\s*href="(.*?)">(.*?)<\/a><\/div><\/td>/g,
+		pagefind: "$2" + "{{separator}}" + "$3" + "{{separator}}" + "$4" + "{{separator}}" + "$6" + "{{separator}}" + "$9" + "{{separator}}" + "$13" + "{{separator}}" + "$16" + "{{separator}}" + "$19" + "{{separator}}" + "$17",
+		pagecountrule: />Showing\s*(\d+)\s*-\s*(\d+)\s*of\s*([\d,]+)\s*(images|)<\/p>/g,
+		pagecountfind: "$1" + "{{separator}}" + "$2" + "{{separator}}" + "$3",
+		pagedeal: function(rr, args) {
+			args = args || {};
+			if (typeof(rr) == "string") rr = rr.split("{{separator}}");
+			var pid = getstr(/\/g\/([\/,\d,\w]+)\//, rr[5]).replace("/", "_").replace("/", "");
+			var title = rr[6];
+			var start = rr[8].split("px");
+			var starthalf = (parseInt(start[1]) == -21) ? true : false;
+			var startcount = (80 + parseInt(start[0])) / 16 - (starthalf ? 0.5 : 0);
+			start = "";
+			for (var i = 0; i < parseInt(startcount); i++) {
+				start += "★"
+			}
+			start += (starthalf ? "☆" : "");
+			var img = "http://" + getstr(/init[s]*~([\w,\.,\/]+)~t/, args.result) + "/" + "t/" + rr[4] + ".jpg";
+			img = getimgload(img, args.plugin, {
+				cachepath: pluginfo(args.plugin).covercachepath,
+				cachetime: 0,
+				cacheheader: {
+					"Cookie": pluginfo(args.plugin).requestcookie
+				}
+			});
+			try {
+				var scontent = '【' + plugfns(args.plugin).typelist[rr[1]]["title"] + '】' + "By " + rr[7];
+				var content = '【' + start + startcount + '星】' + scontent
+			} catch (e) {
+				var scontent = "By " + rr[7];
+				var content = '【' + start + startcount + '星】' + scontent
+			}
+			if (args.multupdate) {
+				args.multupdate(obj_contact(args, {
+					pid: pid,
+					img: img,
+					title: title,
+					content: content
+				}));
+				return false
+			}
+			if (args.multhot) {
+				args.multhot(obj_contact(args, {
+					pid: pid,
+					img: img,
+					title: title,
+					content: content
+				}));
+				return false
+			}
+			if (args.multsearch) {
+				args.multsearch(obj_contact(args, {
+					pid: pid,
+					img: img,
+					title: title,
+					content: content
+				}));
+				return false
+			}
+			if (args.callback) {
+				args.callback({
+					pid: pid,
+					title: title,
+					img: img,
+					content: scontent + '<br>【更新日期】' + rr[2],
+					stitle: '【' + start + startcount + '星】',
+					comment: 1,
+					preview: 1,
+					extrabutton: ''
+				})
+			}
+		}
+	}
+})
