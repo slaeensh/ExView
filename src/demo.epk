@@ -167,12 +167,6 @@ ExView.Plugins({
 							result: result,
 							header: header
 						})
-					},
-					showinfo: {
-						text: '正在加载...' + ((args.page > 1) ? '<br>第' + args.page + '页' : ''),
-						name: '【' + args.title + '】',
-						title: args.title,
-						img: args.img
 					}
 				}
 			},
