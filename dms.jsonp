@@ -4,7 +4,7 @@
 	var newestversion="2.2.1";
 	var notificationinfo="声明：ExView是一个浏览器应用，如果你发现有侵权资源，请不要找我，去找相关站点，你们反编译可以看见ExView就是一个基于WebView的套壳浏览器，你们总不能说浏览器变换一下页面界面就侵权吧！<br>备注:安卓4.0-4.4，请去网盘下载高性能版或使用ExView+,4.4以上WebView性能低下的ROM系统也去下载ExView+,可以不爱请勿伤害！<br>通告：新架构2.2已经不兼容2.2以下的来源，请更新应用版本至2.2以上，和更新所有来源至2.2以上！";
 	var newestversioninfo="1.为AVG游戏引擎添加语音（需自行安装TTS语音库）<br>2.增加屏幕常亮<br>3.增加快速点击和水纹特效<br>4.增加一些长按操作<br>5.修整界面,修正大量BUG<br>6.期待你的五星好评！<br>备注:安卓4.0-4.4，请去网盘下载高性能版或使用ExView+,4.4以上WebView性能低下的ROM系统也去下载ExView+,可以不爱请勿伤害！";
-	var updatepath=iscrosswalk()?'http://www.coolapk.com/apk/com.gentle.exview.plus':'https://www.pgyer.com/exview';//'http://www.coolapk.com/apk/com.gentle.exview';
+	var updatepath=iscrosswalk()?'http://www.coolapk.com/apk/com.gentle.exview.plus':'http://www.coolapk.com/apk/com.gentle.exview';//'https://www.pgyer.com/exview';
 	var getdms=function(flag){
 		var x=flag.x;
 		var y=flag.y;
