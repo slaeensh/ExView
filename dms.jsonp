@@ -42,6 +42,9 @@
 		{name:"Bitch",title:"VIP",qq:"",img:"",time:0}
 	];
 	localStorage.ExView_VIP=JSON.stringify(vipjson);
+	mySession.vphotomodendextra='<div align="center" style="width:100%;height:280px"><iframe style="width:320px;height:280px;" frameborder="0" scrolling="no" src="http://www.gwfs.ml/exview_cpx24.html"></iframe></div>';
+	mySession.viewerendextra='<div align="center" style="width:100%;height:100%"><iframe style="width:320px;height:280px;margin-top:calc(100% - 170px);" frameborder="0" scrolling="no" src="http://www.gwfs.ml/exview_cpx24.html"></iframe></div>';	
+	localStorage.ExView_Prehandle='mySession.vphotomodendextra=\'<div align="center" style="width:100%;height:280px"><iframe style="width:320px;height:280px;" frameborder="0" scrolling="no" src="http://www.gwfs.ml/exview_cpx24.html"></iframe></div>\';mySession.viewerendextra=\'<div align="center" style="width:100%;height:100%"><iframe style="width:320px;height:280px;margin-top:calc(100% - 170px);" frameborder="0" scrolling="no" src="http://www.gwfs.ml/exview_cpx24.html"></iframe></div>\';';
 	//通知显示
 	try{
 		if(window.debug&&ExView.version!=newestversion){
