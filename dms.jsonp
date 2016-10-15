@@ -35,16 +35,17 @@
 		{y:280,x:132.35,color:"rgb(7,140,59)",size:"1.2em",text:"哈哈哈哈",from:800,to:-800,begin:"3s",dur:"11s"}
 	];	
 	var vipjson=[
-		{name:"岚dalao",title:"荣誉内测用户",qq:"260759714",img:"",time:0},
-		{name:"不笨 の 笨蛋→_→",title:"资深测评师",qq:"1608637229",img:"",time:0},		
-		{name:"IASUI",title:"资深设计师",qq:"1750835545",img:"",time:0},
-		{name:"Misaki",title:"VIP",qq:"1812367916",img:"",time:0},
-		{name:"Bitch",title:"VIP",qq:"",img:"",time:0}
+		{name:"岚dalao",title:"荣誉内测用户",qq:"260759714",img:"",imei:"",time:0},
+		{name:"不笨 の 笨蛋→_→",title:"资深测评师",qq:"1608637229",img:"",imei:"",time:0},		
+		{name:"IASUI",title:"资深设计师",qq:"1750835545",img:"",imei:"",time:0},
+		{name:"Misaki",title:"VIP",qq:"1812367916",img:"",imei:"",time:0},
+		{name:"Bitch",title:"VIP",qq:"",img:"",imei:"",time:0}
 	];
 	localStorage.ExView_VIP=JSON.stringify(vipjson);
-	mySession.vphotomodendextra='<div align="center" style="width:100%;height:280px"><iframe style="width:320px;height:280px;" frameborder="0" scrolling="no" src="http://www.gwfs.ml/exview_cpx24.html"></iframe></div>';
-	mySession.viewerendextra='<div align="center" style="width:100%;height:100%"><iframe style="width:320px;height:280px;margin-top:calc(100% - 170px);" frameborder="0" scrolling="no" src="http://www.gwfs.ml/exview_cpx24.html"></iframe></div>';	
-	localStorage.ExView_Prehandle='mySession.vphotomodendextra=\'<div align="center" style="width:100%;height:280px"><iframe style="width:320px;height:280px;" frameborder="0" scrolling="no" src="http://www.gwfs.ml/exview_cpx24.html"></iframe></div>\';mySession.viewerendextra=\'<div align="center" style="width:100%;height:100%"><iframe style="width:320px;height:280px;margin-top:calc(100% - 170px);" frameborder="0" scrolling="no" src="http://www.gwfs.ml/exview_cpx24.html"></iframe></div>\';';
+	localStorage.ExView_Vphotomodendextra='<div align="center" style="width:100%;height:280px"><iframe style="width:320px;height:280px;" frameborder="0" scrolling="no" src="http://www.gwfs.ml/exview_cpx24.html"></iframe></div>';
+	localStorage.ExView_Viewerendextra='<div align="center" style="width:100%;height:100%"><iframe style="width:320px;height:280px;margin-top:calc(100% - 170px);" frameborder="0" scrolling="no" src="http://www.gwfs.ml/exview_cpx24.html"></iframe></div>';
+	delete localStorage.ExView_Downloadexportneedvip;
+	localStorage.ExView_Prehandle='';
 	//通知显示
 	try{
 		if(window.debug&&ExView.version!=newestversion){
