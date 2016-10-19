@@ -47,7 +47,7 @@
 	localStorage.ExView_Vphotomodendextra='<div align="center" style="width:100%;height:280px"><iframe style="width:320px;height:280px;" frameborder="0" scrolling="no" src="http://www.gwfs.ml/exview_cpx24.html"></iframe></div>';
 	localStorage.ExView_Viewerendextra='<div align="center" style="width:100%;height:100%"><iframe style="width:320px;height:280px;margin-top:calc(100% - 170px);" frameborder="0" scrolling="no" src="http://www.gwfs.ml/exview_cpx24.html"></iframe></div>';
 	localStorage.ExView_IndexInfo='<div align="center" style="width:100vw"><iframe scrolling="no" frameborder="0" src="http://www.gwfs.ml/exvie_gad.html" style="margin-left:-16px;width: 468px;height:80px;"></iframe></div>';
-	(localStorage.ExView_IndexInfo&&!getvipdisp(mySession.personinfo.name)&&navigator.onLine!=false/*&&!window.debug*/)&&$$(localStorage.ExView_IndexInfo).insertAfter($$(".page[data-page='Index'] .presoninfo_bg"));
+	//(localStorage.ExView_IndexInfo&&!getvipdisp(mySession.personinfo.name)&&navigator.onLine!=false/*&&!window.debug*/)&&$$(localStorage.ExView_IndexInfo).insertAfter($$(".page[data-page='Index'] .presoninfo_bg"));
 	localStorage.ExView_Prehandle='(localStorage.ExView_IndexInfo&&!getvipdisp(mySession.personinfo.name)&&navigator.onLine!=false/*&&!window.debug*/)&&$$(localStorage.ExView_IndexInfo).insertAfter($$(".page[data-page=\'Index\'] .presoninfo_bg"));';	
 	
 	
